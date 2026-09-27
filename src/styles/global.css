@@ -30,7 +30,8 @@
   --font-extended: 'Unbounded', 'Helvetica Neue', Arial, sans-serif;
   --container-site: 90rem; /* 1440px */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-curtain: cubic-bezier(0.65, 0.05, 0.36, 1);
+  --ease-float: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ---------- Editorial type scale (matches Figma "Editorial/*" + v1 text styles) ---------- */
@@ -131,10 +132,10 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
 /* ---------- Page transitions ----------
- * Every internal link: the old page lifts away while a solid curtain rises from the bottom;
- * the next page loads already covered by the same curtain, which keeps rising off the top as the new content settles in.
+ * Every internal link: the old page drifts up and dims while a solid curtain floats up from the bottom;
+ * the next page loads already covered by the same curtain, which keeps floating off the top as the new content settles in.
  * Plain CSS transforms + normal page loads (no SPA, no View Transitions API) so it behaves the same in every browser.
- * Logic: src/components/layout/PageTransition.astro
+ * Logic: src/components/layout/PageTransition.astro (+ the inline script in BaseLayout <head>).
  */
 .vt-curtain {
   position: fixed; inset: 0 auto auto 0; z-index: 300;
@@ -146,40 +147,47 @@
   visibility: hidden; pointer-events: none;
   will-change: transform;
 }
-.vt-curtain__label { display: block; max-width: 100%; overflow-wrap: anywhere; }
-.vt-curtain__line { position: absolute; left: 0; top: 0; height: 3px; width: 100%; background: var(--ma-accent); transform-origin: left; transform: scaleX(0); }
+/* Label stays on its own compositor layer the whole time, so its text is never re-rasterised mid-animation (no shimmer/jump). */
+.vt-curtain__label {
+  display: block; max-width: 100%;
+  font-size: min(clamp(4.5rem, 11.1vw, 10rem), 12vw); /* long names like "Neighbourhood" fit on one line on phones */
+  will-change: transform, opacity; backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+.vt-curtain__line { position: absolute; left: 0; top: 0; height: 3px; width: 100%; background: var(--ma-accent); transform-origin: left; transform: scaleX(0); will-change: transform; }
 
 /* Leave */
 html.vt-leaving { pointer-events: none; }
 html.vt-leaving .vt-curtain {
   visibility: visible;
   transform: translate3d(0, 0, 0);
-  transition: transform 0.75s var(--ease-curtain), visibility 0s;
+  transition: transform 1s var(--ease-curtain), visibility 0s;
 }
-html.vt-leaving .vt-curtain__label { animation: vt-label-in 0.75s var(--ease-out-soft) 0.2s both; }
-html.vt-leaving .vt-curtain__line { transform: scaleX(1); transition: transform 0.9s var(--ease-curtain) 0.1s; }
+html.vt-leaving .vt-curtain__label { animation: vt-label-in 1.1s var(--ease-float) 0.35s both; }
+html.vt-leaving .vt-curtain__line { transform: scaleX(1); transition: transform 1.2s var(--ease-float) 0.25s; }
 html.vt-leaving #main, html.vt-leaving #site-header, html.vt-leaving footer {
-  transform: translate3d(0, -12vh, 0);
-  opacity: 0.35;
-  transition: transform 0.75s var(--ease-curtain), opacity 0.75s var(--ease-curtain);
+  transform: translate3d(0, -7vh, 0);
+  opacity: 0.5;
+  transition: transform 1.2s var(--ease-float), opacity 1s ease-in-out;
 }
 /* Opened from the full-screen mobile menu (same colour): start covered, no movement needed */
 html.vt-leaving.vt-instant .vt-curtain { transition: none; }
 
-/* Arrive (class is set before first paint by an inline script in <head>) */
+/* Arrive. html.vt-arrive is set before first paint, so the page appears already covered.
+ * Everything waits (paused) until html.vt-reveal is added once the page and fonts are ready,
+ * so a busy first frame can never make the animation skip. */
 @media (prefers-reduced-motion: no-preference) {
-  html.vt-arrive .vt-curtain {
-    visibility: visible;
-    animation: vt-curtain-out 0.85s var(--ease-curtain) 0.12s both;
-  }
+  html.vt-arrive .vt-curtain { visibility: visible; transform: none; animation: vt-curtain-out 1.2s var(--ease-curtain) 0.1s both paused; }
   html.vt-arrive .vt-curtain__line { transform: scaleX(1); }
-  html.vt-arrive .vt-curtain__label { animation: vt-label-out 0.6s var(--ease-curtain) 0.05s both; }
+  html.vt-arrive .vt-curtain__label { animation: vt-label-out 1s ease-in-out 0.05s both paused; }
   /* fill-mode "backwards" so no transform is left behind once finished (keeps position:fixed children working) */
-  html.vt-arrive #main { animation: vt-content-in 1.15s var(--ease-out-soft) 0.3s backwards; }
-  html.vt-arrive #site-header { animation: vt-fade-in 0.8s ease-out 0.55s backwards; }
+  html.vt-arrive #main { animation: vt-content-in 1.6s var(--ease-float) 0.45s backwards paused; }
+  html.vt-arrive #site-header { animation: vt-fade-in 1s ease-out 0.8s backwards paused; }
+  html.vt-arrive.vt-reveal .vt-curtain, html.vt-arrive.vt-reveal .vt-curtain__label,
+  html.vt-arrive.vt-reveal #main, html.vt-arrive.vt-reveal #site-header { animation-play-state: running; }
 }
 @keyframes vt-curtain-out { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -100%, 0); visibility: hidden; } }
-@keyframes vt-label-in { from { transform: translate3d(0, 40%, 0); opacity: 0; } to { transform: none; opacity: 1; } }
-@keyframes vt-label-out { from { transform: none; opacity: 1; } to { transform: translate3d(0, -30%, 0); opacity: 0; } }
-@keyframes vt-content-in { from { transform: translate3d(0, 14vh, 0); opacity: 0.2; } to { transform: none; opacity: 1; } }
+@keyframes vt-label-in { from { transform: translate3d(0, 45%, 0); opacity: 0; } to { transform: translate3d(0, 0, 0); opacity: 1; } }
+@keyframes vt-label-out { from { transform: translate3d(0, 0, 0); opacity: 1; } to { transform: translate3d(0, -35%, 0); opacity: 0; } }
+@keyframes vt-content-in { from { transform: translate3d(0, 10vh, 0); opacity: 0; } to { transform: translate3d(0, 0, 0); opacity: 1; } }
 @keyframes vt-fade-in { from { opacity: 0; } to { opacity: 1; } }

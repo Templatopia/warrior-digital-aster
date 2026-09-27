@@ -1,6 +1,6 @@
 ---
 // Site-wide page transition (see "Page transitions" in global.css).
-// Leave: old page lifts away while a solid curtain rises from the bottom, labelled with the destination.
+// Leave: old page drifts up while a solid curtain floats up from the bottom, labelled with the destination.
 // Arrive: the new page paints already covered by the curtain, which keeps rising off the top.
 // Progressive enhancement: with no JS, reduced motion, modifier-clicks, new tabs, downloads, hash links,
 // external links or tel:/mailto: links, it is a normal navigation.
@@ -25,13 +25,13 @@
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const curtain = document.querySelector<HTMLElement>('.vt-curtain');
   const label = document.querySelector<HTMLElement>('[data-vt-curtain-label]');
-  const LEAVE_MS = 750;
+  const LEAVE_MS = 1000;
 
   // Arrive: tidy up once the curtain has gone (plus a fallback in case animations never fire).
-  const endArrive = () => root.classList.remove('vt-arrive');
+  const endArrive = () => root.classList.remove('vt-arrive', 'vt-reveal');
   if (root.classList.contains('vt-arrive')) {
     curtain?.addEventListener('animationend', (e) => { if (e.target === curtain) endArrive(); });
-    window.setTimeout(endArrive, 2000);
+    window.setTimeout(endArrive, 4000);
   }
 
   const eligible = (a: HTMLAnchorElement, e: MouseEvent) => {
@@ -68,7 +68,7 @@
       window.location.href = href;
     };
 
-    root.classList.remove('vt-arrive');
+    root.classList.remove('vt-arrive', 'vt-reveal');
     // Links inside the full-screen mobile menu: it is already the curtain colour, so cover instantly
     // (same task as the menu closing, so no frame of the page underneath is ever painted).
     const dialog = a.closest('dialog');
@@ -88,6 +88,6 @@
   window.addEventListener('pageshow', (e) => {
     if (!e.persisted) return;
     leaving = false;
-    root.classList.remove('vt-leaving', 'vt-instant', 'vt-arrive');
+    root.classList.remove('vt-leaving', 'vt-instant', 'vt-arrive', 'vt-reveal');
   });
 </script>
