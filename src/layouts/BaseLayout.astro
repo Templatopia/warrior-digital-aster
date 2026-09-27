@@ -46,6 +46,18 @@ const gtm = site.analytics.gtmId;
     <link rel="sitemap" href="/sitemap-index.xml" />
     {schemas.map((s) => <script type="application/ld+json" is:inline set:html={JSON.stringify(s)} />)}
     <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
+    <script is:inline>
+      // Page transitions: the "Next page" banner marks the navigation, the new page picks it up and slides in.
+      document.addEventListener('click', (e) => {
+        const a = e.target instanceof Element && e.target.closest('[data-next-page]');
+        if (a && e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) { try { sessionStorage.setItem('vt', 'slide-up'); } catch {} }
+      });
+      addEventListener('pagereveal', (e) => {
+        let type = null;
+        try { type = sessionStorage.getItem('vt'); sessionStorage.removeItem('vt'); } catch {}
+        if (e.viewTransition && type) e.viewTransition.types.add(type);
+      });
+    </script>
     {gtm && (
       <script is:inline define:vars={{ gtm }}>
         // GTM loads only after consent. Wire this to the client's consent banner.
