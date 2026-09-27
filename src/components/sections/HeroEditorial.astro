@@ -1,0 +1,28 @@
+---
+import site from '../../config/site.json';
+import Photo from '../ui/Photo.astro';
+import Button from '../ui/Button.astro';
+import Marquee from './Marquee.astro';
+import { t, l, pagePath } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+import type { PhotoKey } from '../../data/photos';
+interface Props { locale: Locale; photo: PhotoKey; marquee: string; eyebrow: string; subline: string; }
+const { locale, photo, marquee, eyebrow, subline } = Astro.props;
+---
+<section class="relative isolate flex min-h-[640px] flex-col justify-end overflow-hidden bg-inverse text-cream h-svh max-h-[1000px]">
+  <Photo photo={photo} locale={locale} eager class="absolute inset-0 -z-20 h-full w-full" />
+  <div class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(20_20_18/0.45)_0%,rgb(20_20_18/0.05)_30%,rgb(20_20_18/0.15)_65%,rgb(20_20_18/0.72)_100%)]"></div>
+  <h1 class="sr-only">{site.name}: {subline}</h1>
+  <Marquee text={marquee} class="text-mega absolute inset-x-0 top-[30%] md:top-[33%]" speed={50} />
+  <div class="container-site relative grid gap-6 pb-8 md:grid-cols-3 md:items-end md:pb-16">
+    <p class="text-paren hidden md:block">{t(locale, 'hero.scroll')}</p>
+    <div class="space-y-3 md:text-center">
+      <p class="text-label-ext">{eyebrow}</p>
+      <p class="text-body-l mx-auto max-w-sm">{subline}</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-3 md:justify-end">
+      {site.promo.enabled && <span class="rounded-full border border-cream/80 px-4 py-2 text-sm" title={l(site.promo.detail, locale)}>{l(site.promo.text, locale)}</span>}
+      <Button href={pagePath(locale, 'contact')} size="sm" class="max-md:w-full max-md:py-3.5">{t(locale, 'cta.bookTour')}</Button>
+    </div>
+  </div>
+</section>

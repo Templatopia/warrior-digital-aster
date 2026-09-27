@@ -1,0 +1,11 @@
+---
+import Photo from '../ui/Photo.astro';
+import type { Locale } from '../../i18n/ui';
+import type { PhotoKey } from '../../data/photos';
+interface Props { locale: Locale; photo: PhotoKey; caption?: string; }
+const { locale, photo, caption } = Astro.props;
+---
+<figure class="relative h-[520px] overflow-hidden md:h-[820px]">
+  <Photo photo={photo} locale={locale} class="h-full w-full" />
+  {caption && <figcaption class="text-label-ext container-site absolute inset-x-0 bottom-10 text-cream drop-shadow md:bottom-12">{caption}</figcaption>}
+</figure>

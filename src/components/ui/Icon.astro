@@ -1,0 +1,17 @@
+---
+interface Props { name: 'arrow-right' | 'arrow-left' | 'menu' | 'close' | 'plus' | 'minus' | 'check' | 'mark' | 'chevron-down' | 'external'; size?: number; class?: string; }
+const { name, size = 16, class: cls = '' } = Astro.props;
+const paths: Record<Props['name'], string> = {
+  'arrow-right': '<path d="M3 8h10M9 4l4 4-4 4"/>',
+  'arrow-left': '<path d="M13 8H3M7 4 3 8l4 4"/>',
+  menu: '<path d="M2 5h12M2 8h12M2 11h12"/>',
+  close: '<path d="m3.5 3.5 9 9M12.5 3.5l-9 9"/>',
+  plus: '<path d="M3 8h10M8 3v10"/>',
+  minus: '<path d="M3 8h10"/>',
+  check: '<path d="m3 8.5 3 3 7-7"/>',
+  'chevron-down': '<path d="m4 6 4 4 4-4"/>',
+  external: '<path d="M6 3h7v7M13 3 5 11"/>',
+  mark: '<path d="M8 0c.6 4.7 3.3 7.4 8 8-4.7.6-7.4 3.3-8 8-.6-4.7-3.3-7.4-8-8 4.7-.6 7.4-3.3 8-8Z" fill="currentColor" stroke="none"/>',
+};
+---
+<svg class={cls} width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={paths[name]} />

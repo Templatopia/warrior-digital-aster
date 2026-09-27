@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroPage from '../../components/sections/HeroPage.astro';
+import SectionHead from '../../components/sections/SectionHead.astro';
+import FloorplanGrid from '../../components/sections/FloorplanGrid.astro';
+import Features from '../../components/sections/Features.astro';
+import GallerySlider from '../../components/sections/GallerySlider.astro';
+import FaqList from '../../components/sections/FaqList.astro';
+import CtaStatement from '../../components/sections/CtaStatement.astro';
+import NextPage from '../../components/sections/NextPage.astro';
+import { getPage, getSuites, byOrder } from '../../lib/content';
+import { getLocalePaths } from '../../lib/paths';
+import { nextPage, t } from '../../lib/i18n';
+import { breadcrumbSchema, faqSchema, floorPlanSchema } from '../../lib/schema';
+import type { Locale } from '../../i18n/ui';
+
+export const getStaticPaths = getLocalePaths;
+const locale = Astro.params.lang as Locale;
+const p = await getPage<any>(locale, 'suites');
+const suites = await getSuites();
+const faqs = (await getCollection('faqs', (f) => f.data.pages.includes('suites'))).sort(byOrder);
+---
+<BaseLayout locale={locale} title={p.seo.title} description={p.seo.description} schema={[breadcrumbSchema(locale, 'suites', t(locale, 'nav.suites')), floorPlanSchema(locale, suites), faqSchema(locale, faqs)]}>
+  <HeroPage locale={locale} {...p.hero} />
+  <section class="container-site py-24 md:py-32">
+    <SectionHead label={p.floorplans.label} heading={p.floorplans.heading} summary={p.summary} />
+    <div class="mt-14"><FloorplanGrid locale={locale} note={p.floorplans.note} /></div>
+  </section>
+  <Features locale={locale} items={p.features.items} muted />
+  <GallerySlider locale={locale} {...p.slider} />
+  <FaqList locale={locale} page="suites" label={p.faq.label} heading={p.faq.heading} />
+  <CtaStatement locale={locale} heading={p.cta.heading} />
+  <NextPage locale={locale} page={nextPage('suites')} {...p.next} />
+</BaseLayout>

@@ -1,0 +1,8 @@
+{
+  "seo": { "title": "Contact & Book a Tour | Maison Aster", "description": "Book an in-person or video tour of Maison Aster at 120 Aster Lane, Toronto. Leasing office open 7 days a week. Call (416) 555-0142 or send us a message." },
+  "hero": { "title": "Come see us", "eyebrow": "(Contact)", "photo": "loungeChairs" },
+  "summary": "The Maison Aster leasing office at 120 Aster Lane, Toronto, is open seven days a week for in-person and video tours.",
+  "form": { "label": "(Book a tour)", "heading": "Tell us what you’re looking for. We’ll set up a tour in person or by video, usually within a day." },
+  "faq": { "label": "(FAQ)", "heading": "Before you visit." },
+  "next": { "photo": "heroLiving", "subtitle": "Back to the beginning" }
+}

@@ -1,0 +1,69 @@
+---
+import Photo from '../ui/Photo.astro';
+import Icon from '../ui/Icon.astro';
+import { t } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+import type { PhotoKey } from '../../data/photos';
+interface Props { locale: Locale; heading: string; body?: string; slides: { photo: PhotoKey; caption: string }[]; }
+const { locale, heading, body, slides } = Astro.props;
+const total = String(slides.length).padStart(2, '0');
+---
+<section class="overflow-hidden bg-inverse py-24 text-cream md:py-32" data-slider>
+  <div class="container-site flex flex-col items-center gap-8 text-center" data-reveal>
+    <span class="block h-16 w-px bg-cream" aria-hidden="true"></span>
+    <h2 class="text-quote max-w-2xl">{heading}</h2>
+    {body && <p class="text-body-l max-w-xl text-cream/75">{body}</p>}
+  </div>
+  <div class="mt-16 md:mt-20">
+    <ul class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth scroll-px-4 px-4 md:gap-7 md:px-20 md:scroll-px-20" data-track tabindex="0" aria-label={heading}>
+      {slides.map((s, i) => (
+        <li class="w-[82vw] shrink-0 snap-start md:w-[min(711px,50vw)]" data-slide aria-label={`${i + 1} / ${slides.length}`}>
+          <figure class="space-y-4">
+            <div class="aspect-[711/460] overflow-hidden"><Photo photo={s.photo} locale={locale} sizes="(min-width: 768px) 50vw, 82vw" class="h-full w-full" /></div>
+            <figcaption class="text-sm text-cream/70">{s.caption}</figcaption>
+          </figure>
+        </li>
+      ))}
+      <li class="w-px shrink-0" aria-hidden="true"></li>
+    </ul>
+  </div>
+  <div class="container-site mt-10 flex items-center justify-between">
+    <div class="flex items-center gap-6">
+      <p class="text-label-ext" aria-live="polite"><span data-current>01</span> / {total}</p>
+      <span class="relative block h-px w-40 bg-cream/25 md:w-60"><span class="absolute inset-y-0 left-0 bg-cream transition-[width] duration-300" style={`width:${100 / slides.length}%`} data-bar></span></span>
+    </div>
+    <div class="flex gap-2">
+      <button type="button" class="grid size-12 place-items-center border border-cream/50 transition-colors hover:bg-cream hover:text-ink disabled:opacity-30" data-prev aria-label={t(locale, 'slider.prev')}><Icon name="arrow-left" /></button>
+      <button type="button" class="grid size-12 place-items-center border border-cream/50 transition-colors hover:bg-cream hover:text-ink disabled:opacity-30" data-next aria-label={t(locale, 'slider.next')}><Icon name="arrow-right" /></button>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-slider]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
+    const current = root.querySelector('[data-current]')!;
+    const bar = root.querySelector<HTMLElement>('[data-bar]')!;
+    const prev = root.querySelector<HTMLButtonElement>('[data-prev]')!;
+    const next = root.querySelector<HTMLButtonElement>('[data-next]')!;
+    let index = 0;
+    const update = () => {
+      const left = track.scrollLeft;
+      index = slides.reduce((best, s, i) => (Math.abs(s.offsetLeft - track.offsetLeft - left - parseFloat(getComputedStyle(track).paddingLeft)) < Math.abs(slides[best].offsetLeft - track.offsetLeft - left - parseFloat(getComputedStyle(track).paddingLeft)) ? i : best), 0);
+      current.textContent = String(index + 1).padStart(2, '0');
+      bar.style.width = `${((index + 1) / slides.length) * 100}%`;
+      prev.disabled = track.scrollLeft < 8;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+    };
+    const go = (dir: number) => {
+      const target = slides[Math.max(0, Math.min(slides.length - 1, index + dir))];
+      track.scrollTo({ left: target.offsetLeft - track.offsetLeft - parseFloat(getComputedStyle(track).paddingLeft), behavior: 'smooth' });
+    };
+    prev.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+    track.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+    track.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); go(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); } });
+    update();
+  });
+</script>

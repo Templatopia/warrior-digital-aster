@@ -1,0 +1,42 @@
+---
+/**
+ * Responsive photo. Works with both demo Unsplash images (`unsplash:<id>`) and local images (ImageMetadata).
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { photos, type PhotoKey, type PhotoSrc } from '../../data/photos';
+import type { Locale } from '../../i18n/ui';
+
+interface Props {
+  photo: PhotoKey;
+  locale: Locale;
+  sizes?: string;
+  widths?: number[];
+  class?: string;
+  eager?: boolean;
+  alt?: string;
+}
+const { photo, locale, sizes = '100vw', widths = [480, 768, 1080, 1440, 1920, 2400], class: cls = '', eager = false, alt } = Astro.props;
+const entry = photos[photo];
+const src = entry.src as PhotoSrc;
+const altText = alt ?? entry.alt[locale];
+const isUnsplash = typeof src === 'string';
+const cdn = (id: string, w: number) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=72`;
+const id = isUnsplash ? (src as string).replace('unsplash:', '') : '';
+---
+{isUnsplash ? (
+  <img
+    src={cdn(id, 1440)}
+    srcset={widths.map((w) => `${cdn(id, w)} ${w}w`).join(', ')}
+    sizes={sizes}
+    alt={altText}
+    width="1600"
+    height="1067"
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+    decoding="async"
+    class:list={['object-cover', cls]}
+  />
+) : (
+  <Image src={src as ImageMetadata} alt={altText} widths={widths} sizes={sizes} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} class:list={['object-cover', cls]} />
+)}

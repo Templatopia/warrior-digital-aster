@@ -1,0 +1,71 @@
+{
+  "seo": {
+    "title": "Appartements à louer à Millbrook Commons | Maison Aster",
+    "description": "Vivez à Millbrook Commons, Toronto : Walk Score de 94, à 4 minutes de la station Millbrook et à 15 minutes du centre-ville. Cafés, parcs, écoles et métro."
+  },
+  "hero": {
+    "title": "Millbrook",
+    "eyebrow": "(Quartier)",
+    "subline": "Un coin de Toronto verdoyant et piéton, à quatre minutes du métro.",
+    "photo": "cityStreet"
+  },
+  "summary": "Millbrook Commons est un quartier piéton de Toronto avec un Walk Score de 94. Maison Aster est à 4 minutes de la station Millbrook et à 15 minutes du centre-ville en métro.",
+  "numbers": {
+    "label": "(En chiffres)",
+    "heading": "Des cafés indépendants, un marché le week-end et l’un des plus beaux sentiers de ravin de la ville, à moins de dix minutes à pied.",
+    "items": [
+      {
+        "value": "94",
+        "label": "Walk Score"
+      },
+      {
+        "value": "4′",
+        "label": "Jusqu’à la station Millbrook",
+        "accent": true
+      },
+      {
+        "value": "15′",
+        "label": "Jusqu’au centre-ville en métro"
+      }
+    ]
+  },
+  "map": {
+    "label": "Ouvrir dans Google Maps",
+    "url": "https://maps.google.com/?q=120+Aster+Lane+Toronto"
+  },
+  "places": {
+    "label": "(Tout près)",
+    "note": "Temps de marche depuis le hall"
+  },
+  "features": {
+    "items": [
+      {
+        "number": "01",
+        "heading": "Le café, au rez-de-chaussée",
+        "body": "Little Aster Coffee ouvre à 7 h au niveau commercial de l’immeuble. Le marché Commons a lieu tous les samedis, à trois minutes.",
+        "photo": "cafe",
+        "link": {
+          "label": "Ouvrir la carte",
+          "url": "https://maps.google.com/?q=120+Aster+Lane+Toronto"
+        }
+      },
+      {
+        "number": "02",
+        "heading": "Le centre-ville en quinze minutes",
+        "body": "La station Millbrook est à quatre minutes à pied. Les parcs riverains, le quartier financier et l’aréna sont à quelques arrêts.",
+        "photo": "torontoSkyline",
+        "link": {
+          "label": "Réserver une visite",
+          "page": "contact"
+        }
+      }
+    ]
+  },
+  "cta": {
+    "heading": "Un chez-soi, bien entretenu. Venez le voir par vous-même."
+  },
+  "next": {
+    "photo": "rooftopFriends",
+    "subtitle": "Des voisins, pas des inconnus"
+  }
+}

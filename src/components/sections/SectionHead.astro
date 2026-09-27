@@ -1,0 +1,13 @@
+---
+/** "(Label)" + large statement, the editorial section heading used across the site. */
+interface Props { label: string; heading: string; summary?: string; tone?: 'light' | 'dark'; as?: 'h2' | 'h1'; aside?: string; }
+const { label, heading, summary, tone = 'light', as: Tag = 'h2', aside } = Astro.props;
+---
+<div class="grid gap-5 md:grid-cols-[1fr_minmax(0,62%)] md:gap-10" data-reveal>
+  <p class:list={['text-paren pt-2', tone === 'dark' ? 'text-cream/80' : 'text-ink-soft']}>{label}</p>
+  <div class="space-y-5">
+    <Tag class:list={['text-statement', tone === 'dark' ? 'text-cream' : 'text-ink']}>{heading}</Tag>
+    {summary && <p class:list={['max-w-2xl', tone === 'dark' ? 'text-cream/75' : 'text-ink-soft']}>{summary}</p>}
+    {aside && <p class="text-sm text-ink-soft">{aside}</p>}
+  </div>
+</div>

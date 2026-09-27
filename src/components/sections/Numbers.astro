@@ -1,0 +1,13 @@
+---
+interface Props { items: { value: string; label: string; accent?: boolean }[]; }
+const { items } = Astro.props;
+---
+<dl class="mt-14 grid grid-cols-3 gap-4 md:gap-10">
+  {items.map((n) => (
+    <div class="border-t border-line pt-4 md:pt-6" data-reveal>
+      <dt class="sr-only">{n.label}</dt>
+      <dd class:list={['text-feature md:text-title', n.accent ? 'text-accent' : 'text-ink']}>{n.value}</dd>
+      <dd class="mt-2 text-sm text-ink-soft md:text-base">{n.label}</dd>
+    </div>
+  ))}
+</dl>

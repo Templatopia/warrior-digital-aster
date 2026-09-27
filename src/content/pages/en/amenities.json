@@ -1,0 +1,19 @@
+{
+  "seo": { "title": "Amenities | Rooftop, Fitness & Co-working at Maison Aster", "description": "Maison Aster residents get eight shared spaces with no amenity fees: rooftop terrace, 24/7 fitness studio, co-working, yoga room, pet spa and resident lounge." },
+  "hero": { "title": "Amenities", "eyebrow": "(Amenities)", "subline": "Eight shared spaces, from the rooftop to the pet spa. All included.", "photo": "rooftop" },
+  "summary": "Residents of Maison Aster get eight shared spaces at no extra cost, including a rooftop terrace, a 24/7 fitness studio, co-working and a pet spa.",
+  "mosaic": { "label": "(What’s included)", "heading": "No amenity fees. Every space is designed to be used every day, not just shown on a tour." },
+  "band": { "photo": "balconies", "caption": "Service, built in" },
+  "services": { "label": "(Also included)", "heading": "The details you notice on day 300, not just day one.", "items": [
+    { "title": "On-site team", "body": "Leasing and management in the building, seven days a week." },
+    { "title": "24/7 maintenance", "body": "Emergency response any time, plus online requests." },
+    { "title": "Smart parcel room", "body": "Lockers with cold storage for groceries." },
+    { "title": "Bike storage", "body": "Secure racks and a repair station on P1." },
+    { "title": "EV charging", "body": "Level 2 chargers in the underground garage." },
+    { "title": "Resident app", "body": "Book spaces, pay rent and message the team." },
+    { "title": "Keyless entry", "body": "One fob for your suite, the lobby and amenities." },
+    { "title": "Guest suite", "body": "Bookable for visiting family and friends." }
+  ] },
+  "cta": { "heading": "A home, well kept. Come see it for yourself." },
+  "next": { "photo": "cityStreet", "subtitle": "Millbrook Commons, four minutes to everything" }
+}

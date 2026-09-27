@@ -1,0 +1,27 @@
+---
+/** Lightweight illustrated map (no third-party scripts). Links out to Google Maps. */
+import { getCollection } from 'astro:content';
+import site from '../../config/site.json';
+import Icon from '../ui/Icon.astro';
+import { byOrder } from '../../lib/content';
+interface Props { url: string; label: string; }
+const { url, label } = Astro.props;
+const places = (await getCollection('places')).sort(byOrder);
+// Illustrative pin positions (% of the map) for the demo. Replace with real coordinates → positions per client.
+const pos: Record<string, [number, number]> = { 'little-aster': [44, 36], 'commons-market': [40, 66], 'millbrook-station': [55, 22], 'osteria-verde': [70, 72], 'ravine-park': [16, 86], 'public-school': [82, 44], climbing: [26, 30], foundry: [86, 16] };
+---
+<a href={url} target="_blank" rel="noopener" class="group relative block aspect-[358/300] overflow-hidden bg-muted md:aspect-[2/1]" aria-label={`${label} — ${site.address.street}`}>
+  <svg class="absolute inset-0 h-full w-full" viewBox="0 0 1280 640" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 180 L1280 140 M0 420 L1280 460 M260 0 L220 640 M620 0 L660 640 M980 0 L1010 640 M0 300 C300 280 500 340 700 310 S1100 250 1280 290" stroke="#fff" stroke-width="10" fill="none" />
+    <path d="M0 560 C200 520 380 600 560 560 S900 500 1280 540" stroke="#fff" stroke-width="4" fill="none" />
+    <path d="M40 600 C160 470 300 520 420 600 L420 640 L40 640 Z" fill="var(--color-secondary)" fill-opacity=".5" />
+    <path d="M1060 40 h180 v160 h-180 Z" fill="var(--color-secondary)" fill-opacity=".45" />
+  </svg>
+  <span class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-on-accent shadow-lg">{site.name}</span>
+  {places.map((p) => pos[p.id] && (
+    <span class="absolute hidden -translate-x-1/2 items-center gap-2 rounded-full bg-surface px-3 py-1.5 text-xs shadow-sm md:inline-flex" style={`left:${pos[p.id][0]}%;top:${pos[p.id][1]}%`}>
+      <span class="size-2 rounded-full bg-accent"></span>{p.data.name} · {p.data.walkMinutes}′
+    </span>
+  ))}
+  <span class="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm text-page transition-colors group-hover:bg-accent">{label} <Icon name="external" size={14} /></span>
+</a>

@@ -1,0 +1,24 @@
+---
+/** Large-type editorial list: label · name · accent value */
+interface Props { rows: { label: string; name: string; value: string; href?: string }[]; valueFirst?: boolean; }
+const { rows, valueFirst = false } = Astro.props;
+---
+<ul class="border-t border-line">
+  {rows.map((r) => (
+    <li class="grid grid-cols-[1fr_auto] items-center gap-x-6 gap-y-1 border-b border-line py-5 md:grid-cols-[200px_1fr_auto] md:py-6" data-reveal>
+      {valueFirst ? (
+        <>
+          <span class="text-feature order-1 text-accent md:order-none">{r.value}</span>
+          <span class="text-feature col-span-2 md:col-span-1">{r.name}</span>
+          <span class="text-label-ext text-ink-soft">{r.label}</span>
+        </>
+      ) : (
+        <>
+          <span class="text-label-ext col-span-2 text-ink-soft md:col-span-1">{r.label}</span>
+          <span class="text-feature">{r.name}</span>
+          <span class="text-feature text-accent">{r.value}</span>
+        </>
+      )}
+    </li>
+  ))}
+</ul>

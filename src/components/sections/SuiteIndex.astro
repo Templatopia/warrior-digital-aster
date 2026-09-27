@@ -1,0 +1,37 @@
+---
+import Photo from '../ui/Photo.astro';
+import Icon from '../ui/Icon.astro';
+import SectionHead from './SectionHead.astro';
+import { getSuites } from '../../lib/content';
+import { t, pagePath, formatPrice } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+import type { PhotoKey } from '../../data/photos';
+interface Row { name: string; types: string[]; photo: PhotoKey; }
+interface Props { locale: Locale; label: string; heading: string; rows: Row[]; }
+const { locale, label, heading, rows } = Astro.props;
+const suites = await getSuites();
+const data = rows.map((r) => {
+  const list = suites.filter((s) => r.types.includes(s.data.type));
+  const min = Math.min(...list.map((s) => s.data.sqft)), max = Math.max(...list.map((s) => s.data.sqft));
+  const price = Math.min(...list.map((s) => s.data.priceFrom));
+  return { ...r, size: min === max ? `${min.toLocaleString(locale)} ${t(locale, 'suite.sqft')}` : `${min}–${max} ${t(locale, 'suite.sqft')}`, price: `${t(locale, 'suite.from')} ${formatPrice(price, locale)}`, filter: r.types[0] };
+});
+---
+<section class="container-site py-24 md:py-32">
+  <SectionHead label={label} heading={heading} />
+  <ul class="mt-12 border-t border-line md:mt-16">
+    {data.map((r) => (
+      <li class="border-b border-line">
+        <a href={`${pagePath(locale, 'suites')}?type=${r.filter}`} class="group grid grid-cols-[1fr_auto] items-center gap-4 py-6 md:grid-cols-[1fr_220px_140px_140px_24px] md:gap-12 md:py-7">
+          <span class="text-feature transition-colors group-hover:text-accent">{r.name}</span>
+          <span class="relative hidden h-[150px] overflow-hidden opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:block" aria-hidden="true">
+            <Photo photo={r.photo} locale={locale} sizes="220px" widths={[240, 480]} class="h-full w-full" alt="" />
+          </span>
+          <span class="hidden text-ink-soft md:block">{r.size}</span>
+          <span class="text-right md:text-body-l"><span class="block text-sm text-ink-soft md:hidden">{r.size}</span>{r.price}</span>
+          <Icon name="arrow-right" size={20} class="hidden transition-transform group-hover:translate-x-1 group-hover:text-accent md:block" />
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>

@@ -1,0 +1,22 @@
+---
+import Photo from '../ui/Photo.astro';
+import Button from '../ui/Button.astro';
+import { pagePath, type PageKey } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+import type { PhotoKey } from '../../data/photos';
+interface Props { locale: Locale; number: string; heading: string; body: string; photo: PhotoKey; link?: { label: string; page?: PageKey; url?: string }; side?: 'left' | 'right'; }
+const { locale, number, heading, body, photo, link, side = 'left' } = Astro.props;
+const href = link ? (link.url ?? pagePath(locale, link.page!)) : undefined;
+---
+<article class:list={['grid items-end gap-8 md:grid-cols-2 md:gap-20', side === 'right' && 'md:[&>figure]:order-2 md:items-start']} data-reveal>
+  <figure class="aspect-[5/6] overflow-hidden md:max-w-[600px]">
+    <Photo photo={photo} locale={locale} sizes="(min-width: 768px) 45vw, 100vw" class="h-full w-full transition-transform duration-[1.2s] ease-out hover:scale-[1.03]" />
+  </figure>
+  <div class:list={['max-w-[480px] space-y-6 md:py-16', side === 'left' ? 'md:justify-self-end' : '']}>
+    <p class="text-label-ext text-accent">{number}</p>
+    <span class="block h-px w-12 bg-ink" aria-hidden="true"></span>
+    <h3 class="text-feature">{heading}</h3>
+    <p class="text-body-l text-ink-soft">{body}</p>
+    {link && <Button href={href} variant="ghost" external={!!link.url}>{link.label}</Button>}
+  </div>
+</article>

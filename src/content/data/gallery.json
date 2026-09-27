@@ -1,0 +1,20 @@
+[
+  { "id": "g1", "photo": "heroLiving", "category": "suites", "order": 1 },
+  { "id": "g2", "photo": "suiteLivingWarm", "category": "suites", "order": 2 },
+  { "id": "g3", "photo": "dining", "category": "suites", "order": 3 },
+  { "id": "g4", "photo": "bedroomWhite", "category": "suites", "order": 4 },
+  { "id": "g5", "photo": "kitchenWhite", "category": "suites", "order": 5 },
+  { "id": "g6", "photo": "fitness", "category": "amenities", "order": 6 },
+  { "id": "g7", "photo": "bathroom", "category": "suites", "order": 7 },
+  { "id": "g8", "photo": "readingNook", "category": "amenities", "order": 8 },
+  { "id": "g9", "photo": "kitchenDark", "category": "suites", "order": 9 },
+  { "id": "g10", "photo": "rooftop", "category": "amenities", "order": 10 },
+  { "id": "g11", "photo": "facadeModern", "category": "building", "order": 11 },
+  { "id": "g12", "photo": "bedroomDark", "category": "suites", "order": 12 },
+  { "id": "g13", "photo": "cafe", "category": "neighbourhood", "order": 13 },
+  { "id": "g14", "photo": "balconies", "category": "building", "order": 14 },
+  { "id": "g15", "photo": "torontoSkyline", "category": "neighbourhood", "order": 15 },
+  { "id": "g16", "photo": "buildingTower", "category": "building", "order": 16 },
+  { "id": "g17", "photo": "livingGrey", "category": "suites", "order": 17 },
+  { "id": "g18", "photo": "cityStreet", "category": "neighbourhood", "order": 18 }
+]

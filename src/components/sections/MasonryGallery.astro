@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import Photo from '../ui/Photo.astro';
+import Icon from '../ui/Icon.astro';
+import HeroDark from './HeroDark.astro';
+import { t } from '../../lib/i18n';
+import { byOrder } from '../../lib/content';
+import { photos, type PhotoSrc } from '../../data/photos';
+import type { Locale, UiKey } from '../../i18n/ui';
+interface Props { locale: Locale; title: string; }
+const { locale, title } = Astro.props;
+const items = (await getCollection('gallery')).sort(byOrder);
+const cats = ['all', 'suites', 'amenities', 'building', 'neighbourhood'] as const;
+const count = (c: string) => (c === 'all' ? items.length : items.filter((i) => i.data.category === c).length);
+const ratios = ['aspect-[4/5]', 'aspect-[4/3]', 'aspect-square', 'aspect-[3/4]', 'aspect-[4/3]', 'aspect-[5/4]'];
+const full = (src: string) => `https://images.unsplash.com/photo-${src.replace('unsplash:', '')}?auto=format&fit=max&w=2000&q=80`;
+---
+<HeroDark title={title}>
+  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div class="no-scrollbar -mx-4 flex gap-6 overflow-x-auto px-4 md:mx-0 md:gap-10 md:px-0" role="toolbar" aria-label={title}>
+      {cats.map((c, i) => (
+        <button type="button" data-cat={c} aria-pressed={i === 0 ? 'true' : 'false'} class="shrink-0 border-b border-transparent pb-1.5 text-[0.9375rem] font-medium opacity-60 transition hover:opacity-100 aria-pressed:border-cream aria-pressed:opacity-100">
+          {t(locale, `gallery.${c}` as UiKey)} <sup class="opacity-60">{count(c)}</sup>
+        </button>
+      ))}
+    </div>
+    <p class="text-paren hidden opacity-80 md:block">{t(locale, 'gallery.enlarge')}</p>
+  </div>
+</HeroDark>
+<section class="container-site py-12 md:py-20">
+  <ul class="columns-2 gap-2.5 md:columns-3 md:gap-5 [&>li]:mb-2.5 md:[&>li]:mb-5" data-masonry>
+    {items.map((it, i) => {
+      const p = photos[it.data.photo];
+      const ps = p.src as PhotoSrc;
+      const src = typeof ps === 'string' ? full(ps) : ps.src;
+      return (
+        <li class="break-inside-avoid" data-cat={it.data.category}>
+          <button type="button" class="group block w-full overflow-hidden" data-open={src} data-alt={p.alt[locale]}>
+            <span class:list={['block overflow-hidden', ratios[i % ratios.length]]}>
+              <Photo photo={it.data.photo} locale={locale} sizes="(min-width: 768px) 30vw, 50vw" widths={[400, 800, 1200]} class="h-full w-full transition-transform duration-700 group-hover:scale-105" />
+            </span>
+          </button>
+        </li>
+      );
+    })}
+  </ul>
+</section>
+<dialog class="m-auto max-h-[92vh] max-w-[92vw] bg-transparent p-0 backdrop:bg-ink/90" data-lightbox>
+  <img src="" alt="" class="max-h-[88vh] w-auto object-contain" data-lightbox-img />
+  <button type="button" class="fixed top-5 right-5 grid size-12 place-items-center rounded-full bg-cream text-ink" data-lightbox-close aria-label={t(locale, 'gallery.close')}><Icon name="close" size={20} /></button>
+</dialog>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-cat]');
+  const items = document.querySelectorAll<HTMLElement>('[data-masonry] > li');
+  buttons.forEach((b) => b.addEventListener('click', () => {
+    const c = b.dataset.cat!;
+    buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    items.forEach((li) => (li.hidden = c !== 'all' && li.dataset.cat !== c));
+  }));
+  const dlg = document.querySelector<HTMLDialogElement>('[data-lightbox]')!;
+  const img = dlg.querySelector<HTMLImageElement>('[data-lightbox-img]')!;
+  document.querySelectorAll<HTMLButtonElement>('[data-open]').forEach((b) => b.addEventListener('click', () => { img.src = b.dataset.open!; img.alt = b.dataset.alt!; dlg.showModal(); }));
+  dlg.querySelector('[data-lightbox-close]')!.addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+</script>

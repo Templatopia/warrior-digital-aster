@@ -1,0 +1,30 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost' | 'inverse' | 'outline-light';
+  size?: 'lg' | 'sm';
+  arrow?: boolean;
+  type?: 'button' | 'submit';
+  class?: string;
+  external?: boolean;
+  [key: string]: any;
+}
+const { href, variant = 'primary', size = 'lg', arrow = true, type = 'button', class: cls = '', external = false, ...rest } = Astro.props;
+const base = 'group inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors duration-200 whitespace-nowrap';
+const sizes = { lg: 'text-[0.9375rem] px-8 py-3.5', sm: 'text-[0.9375rem] px-6 py-2.5' };
+const variants = {
+  primary: 'bg-accent text-on-accent hover:bg-accent-hover',
+  secondary: 'border border-line-strong text-ink hover:bg-ink hover:text-page',
+  ghost: '!px-0 text-ink hover:text-accent',
+  inverse: 'bg-cream text-ink hover:bg-surface',
+  'outline-light': 'border border-cream/70 text-cream hover:bg-cream hover:text-ink',
+};
+const classes = [base, sizes[size], variants[variant], cls];
+const Tag = href ? 'a' : 'button';
+const extra = external ? { target: '_blank', rel: 'noopener' } : {};
+---
+<Tag href={href} type={href ? undefined : type} class:list={classes} {...extra} {...rest}>
+  <slot />
+  {arrow && <Icon name="arrow-right" class="transition-transform duration-200 group-hover:translate-x-0.5" />}
+</Tag>

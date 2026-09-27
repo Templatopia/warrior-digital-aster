@@ -1,0 +1,16 @@
+---
+import Photo from '../ui/Photo.astro';
+import { t, pagePath, type PageKey } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+import type { PhotoKey } from '../../data/photos';
+interface Props { locale: Locale; page: PageKey; photo: PhotoKey; subtitle: string; }
+const { locale, page, photo, subtitle } = Astro.props;
+const title = t(locale, `nav.${page}`);
+---
+<a href={pagePath(locale, page)} class="group relative isolate flex h-[440px] flex-col items-center justify-center gap-4 overflow-hidden text-center text-cream md:h-[640px]">
+  <Photo photo={photo} locale={locale} class="absolute inset-0 -z-20 h-full w-full transition-transform duration-[1.4s] ease-out group-hover:scale-105" alt="" />
+  <span class="absolute inset-0 -z-10 bg-[rgb(20_20_18/0.45)]" aria-hidden="true"></span>
+  <span class="text-paren rounded-full border border-cream px-3.5 py-1">{t(locale, 'next.label')}</span>
+  <span class="text-title px-4 [overflow-wrap:anywhere]">{title}</span>
+  <span class="text-body-l px-4">{subtitle}</span>
+</a>

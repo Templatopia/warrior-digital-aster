@@ -1,0 +1,17 @@
+{
+  "seo": { "title": "La vie à Maison Aster | Expérience résident et activités", "description": "Gestion sur place, entretien 24 h sur 24 et un calendrier d’activités toute l’année : soupers sur le toit, club de course, yoga et soirées cinéma à Maison Aster." },
+  "hero": { "title": "Style de vie", "eyebrow": "(Style de vie)", "subline": "Un service sur place, un calendrier toute l’année et des voisins que vous connaîtrez vraiment.", "photo": "rooftopFriends" },
+  "summary": "Maison Aster est gérée sur place par Aster Living Group, avec entretien 24 h sur 24 et un calendrier d’activités pour les résidents toute l’année.",
+  "philosophy": { "photo": "communityDinner", "quote": "« Ici, on connaît nos voisins par leur prénom. »", "attribution": "Résidente, The Grove", "attributionLabel": "(Communauté)", "marquee": "Voisinage", "label": "(Notre approche)", "statement": "Répondre vite, bien réparer, traiter chaque appartement comme le nôtre. Puis donner aux gens de bonnes raisons de se rencontrer." },
+  "events": { "label": "(Cette saison)", "note": "Les résidents confirment dans l’appli" },
+  "features": { "items": [
+    { "number": "01", "heading": "Des soupers qui valent le détour", "body": "Réservez la cuisine de chef et la table de douze du salon des résidents, ou joignez-vous au club souper mensuel sur le toit.", "photo": "friendsTable", "link": { "label": "Voir les commodités", "page": "amenities" } },
+    { "number": "02", "heading": "Le bien-être au calendrier", "body": "Yoga le matin deux fois par semaine, un club de course sur la boucle du ravin et un gym qui ne ferme jamais.", "photo": "yoga", "link": { "label": "Voir les commodités", "page": "amenities" } },
+    { "number": "03", "heading": "Les animaux, vraiment bienvenus", "body": "Jusqu’à deux animaux par appartement, une station de lavage au rez-de-chaussée et un parc au bout de la rue.", "photo": "pets", "link": { "label": "Réserver une visite", "page": "contact" } }
+  ] },
+  "slider": { "heading": "La vie à Maison Aster", "body": "Quelques moments du calendrier des résidents.", "slides": [
+    { "photo": "communityDinner", "caption": "Club souper · Niveau 24" }, { "photo": "cowork", "caption": "Matins de cotravail · Niveau 2" }, { "photo": "rooftop", "caption": "L’été sur le toit" }, { "photo": "yoga", "caption": "Yoga au coucher du soleil" }
+  ] },
+  "cta": { "heading": "Un chez-soi, bien entretenu. Venez le voir par vous-même." },
+  "next": { "photo": "openLivingDining", "subtitle": "Faites le tour" }
+}

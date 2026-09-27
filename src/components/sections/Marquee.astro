@@ -1,0 +1,11 @@
+---
+/** Oversized wordmark that scrolls horizontally and bleeds off both edges. Decorative: hidden from assistive tech. */
+interface Props { text: string; class?: string; speed?: number; reverse?: boolean; }
+const { text, class: cls = '', speed = 45, reverse = false } = Astro.props;
+const items = Array.from({ length: 4 }, () => text);
+---
+<div class:list={['overflow-hidden whitespace-nowrap select-none', cls]} aria-hidden="true">
+  <div class="marquee-track" data-reverse={reverse ? '' : undefined} style={`--marquee-speed:${speed}s`}>
+    {[...items, ...items].map((w) => <span class="pr-[0.3em]">{w}</span>)}
+  </div>
+</div>

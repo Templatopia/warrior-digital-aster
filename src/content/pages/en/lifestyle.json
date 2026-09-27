@@ -1,0 +1,17 @@
+{
+  "seo": { "title": "Life at Maison Aster | Resident Experience & Events", "description": "On-site management, 24/7 maintenance and a year-round resident calendar of rooftop dinners, run club, yoga and movie nights at Maison Aster in Toronto." },
+  "hero": { "title": "Lifestyle", "eyebrow": "(Lifestyle)", "subline": "On-site service, a year-round calendar and neighbours you’ll actually know.", "photo": "rooftopFriends" },
+  "summary": "Maison Aster is managed on site by Aster Living Group, with 24/7 maintenance and a year-round calendar of resident events.",
+  "philosophy": { "photo": "communityDinner", "quote": "“We know our neighbours by name here.”", "attribution": "Resident, The Grove", "attributionLabel": "(Community)", "marquee": "Neighbours", "label": "(Our approach)", "statement": "Respond fast, fix things properly, treat every suite like our own. Then give people good reasons to meet." },
+  "events": { "label": "(This season)", "note": "Residents RSVP in the app" },
+  "features": { "items": [
+    { "number": "01", "heading": "Dinners worth staying in for", "body": "Book the resident lounge’s chef’s kitchen and twelve-seat table, or join the monthly supper club on the roof.", "photo": "friendsTable", "link": { "label": "See the amenities", "page": "amenities" } },
+    { "number": "02", "heading": "Wellness on the calendar", "body": "Morning yoga twice a week, a run club on the ravine loop, and a fitness studio that never closes.", "photo": "yoga", "link": { "label": "See the amenities", "page": "amenities" } },
+    { "number": "03", "heading": "Pets welcome, properly", "body": "Up to two pets per suite, a dog wash on the ground floor and a park at the end of the street.", "photo": "pets", "link": { "label": "Book a tour", "page": "contact" } }
+  ] },
+  "slider": { "heading": "Life at Maison Aster", "body": "A few moments from the resident calendar.", "slides": [
+    { "photo": "communityDinner", "caption": "Supper club · Level 24" }, { "photo": "cowork", "caption": "Co-working mornings · Level 2" }, { "photo": "rooftop", "caption": "Summer on the roof" }, { "photo": "yoga", "caption": "Sunset yoga" }
+  ] },
+  "cta": { "heading": "A home, well kept. Come see it for yourself." },
+  "next": { "photo": "openLivingDining", "subtitle": "Take a look around" }
+}

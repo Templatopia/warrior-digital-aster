@@ -1,0 +1,15 @@
+---
+import site from '../../config/site.json';
+import Button from '../ui/Button.astro';
+import { t, pagePath } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+interface Props { locale: Locale; heading: string; }
+const { locale, heading } = Astro.props;
+---
+<section class="bg-accent py-28 text-on-accent md:py-40">
+  <div class="container-site flex flex-col items-center gap-10 text-center" data-reveal>
+    <h2 class="text-quote max-w-4xl">{heading}</h2>
+    <Button href={pagePath(locale, 'contact')} variant="inverse">{t(locale, 'cta.bookTour')}</Button>
+    <p class="text-sm opacity-80">{t(locale, 'cta.callUs')} <a href={`tel:${site.phoneHref}`} class="underline underline-offset-4">{site.phone}</a> · {t(locale, 'cta.open7')}</p>
+  </div>
+</section>

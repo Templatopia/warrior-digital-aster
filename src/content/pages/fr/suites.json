@@ -1,0 +1,16 @@
+{
+  "seo": { "title": "Appartements et plans | Maison Aster, location à Toronto", "description": "Dix plans d’appartements à louer à Maison Aster, du studio de 420 pi² au penthouse de 1 350 pi², dès 2 050 $/mois. Filtrez par taille, prix et date d’emménagement." },
+  "hero": { "title": "Appartements", "eyebrow": "(Appartements)", "subline": "Dix plans, du studio de 420 pi² au penthouse de 1 350 pi².", "photo": "openLiving" },
+  "summary": "Maison Aster propose 10 plans, du studio de 420 pi² au penthouse de trois chambres de 1 350 pi², avec des loyers à partir de 2 050 $ par mois.",
+  "floorplans": { "label": "(Plans)", "heading": "Trouvez celui qui vous convient. Filtrez par taille, prix et date d’emménagement.", "note": "Les plans sont fournis à titre indicatif. Les disponibilités sont mises à jour chaque jour." },
+  "features": { "items": [
+    { "number": "01", "heading": "Intégré, pas ajouté", "body": "Comptoirs en quartz, électroménagers intégrés, larges planches de chêne, thermostats intelligents et entrée sans clé, dans chaque appartement.", "photo": "kitchenWhite", "link": { "label": "Réserver une visite", "page": "contact" } },
+    { "number": "02", "heading": "Des salles de bain où s’attarder", "body": "Douches vitrées sans cadre, baignoires profondes dans certains appartements, planchers chauffants et porcelaine pleine hauteur.", "photo": "bathroom", "link": { "label": "Voir la galerie", "page": "gallery" } }
+  ] },
+  "slider": { "heading": "À l’intérieur", "body": "Lumière, chêne et quartz. Faites défiler les finitions.", "slides": [
+    { "photo": "bedroomDark", "caption": "Chambre principale · The Laurel" }, { "photo": "kitchenDark", "caption": "Cuisine · The Juniper" }, { "photo": "readingNook", "caption": "Bureau · The Elm" }, { "photo": "livingGrey", "caption": "Salon · The Grove" }
+  ] },
+  "faq": { "label": "(FAQ)", "heading": "Bonnes questions." },
+  "cta": { "heading": "Un chez-soi, bien entretenu. Venez le voir par vous-même." },
+  "next": { "photo": "rooftop", "subtitle": "Huit espaces communs, tout compris" }
+}

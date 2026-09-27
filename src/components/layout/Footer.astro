@@ -1,0 +1,46 @@
+---
+import site from '../../config/site.json';
+import Logo from '../ui/Logo.astro';
+import { t, l, pagePath, pageOrder } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const a = site.address;
+const year = new Date().getFullYear();
+---
+<footer class="bg-inverse text-cream">
+  <div class="container-site grid gap-12 py-20 md:grid-cols-[1fr_auto] md:gap-16 md:py-28">
+    <div class="space-y-5">
+      <Logo />
+      <address class="not-italic leading-relaxed opacity-80">{a.street}<br />{a.city}, {a.region} {a.postalCode}</address>
+      <p class="leading-relaxed opacity-80"><a href={`tel:${site.phoneHref}`} class="hover:underline">{site.phone}</a><br /><a href={`mailto:${site.email}`} class="hover:underline">{site.email}</a></p>
+      <p class="text-sm leading-relaxed opacity-60">{t(locale, 'footer.office')}<br />{site.hours.map((h) => `${l(h.label, locale)} ${h.opens}–${h.closes}`).join(' · ')}</p>
+    </div>
+    <div class="grid grid-cols-2 gap-10 sm:grid-cols-3 md:gap-16">
+      <div>
+        <h2 class="text-label-ext mb-4 opacity-60">{t(locale, 'footer.explore')}</h2>
+        <ul class="space-y-2.5">{pageOrder.filter((p) => p !== 'home').map((p) => <li><a href={pagePath(locale, p)} class="hover:underline">{t(locale, `nav.${p}`)}</a></li>)}</ul>
+      </div>
+      <div>
+        <h2 class="text-label-ext mb-4 opacity-60">{t(locale, 'footer.residents')}</h2>
+        <ul class="space-y-2.5">
+          <li><a href={site.residentPortalUrl} class="hover:underline">{t(locale, 'footer.residentLogin')}</a></li>
+          <li><a href={site.residentPortalUrl} class="hover:underline">{t(locale, 'footer.maintenance')}</a></li>
+          <li><a href={pagePath(locale, 'contact')} class="hover:underline">{t(locale, 'cta.bookTour')}</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="text-label-ext mb-4 opacity-60">{t(locale, 'footer.follow')}</h2>
+        <ul class="space-y-2.5">{site.social.map((s) => <li><a href={s.url} class="hover:underline" rel="noopener">{s.label}</a></li>)}</ul>
+      </div>
+    </div>
+  </div>
+  <div class="container-site flex flex-col gap-3 border-t border-cream/20 py-6 text-xs opacity-70 md:flex-row md:justify-between">
+    <p>© {year} {site.landlord.name}. {t(locale, 'footer.rights')}</p>
+    <ul class="flex flex-wrap gap-x-5 gap-y-2">
+      <li><a href={pagePath(locale, 'privacy')} class="hover:underline">{t(locale, 'footer.privacy')}</a></li>
+      <li><a href={pagePath(locale, 'accessibility')} class="hover:underline">{t(locale, 'footer.accessibility')}</a></li>
+      <li><a href={pagePath(locale, 'terms')} class="hover:underline">{t(locale, 'footer.terms')}</a></li>
+    </ul>
+  </div>
+</footer>

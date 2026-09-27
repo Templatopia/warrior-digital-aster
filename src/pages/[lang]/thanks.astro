@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/ui/Button.astro';
+import { getPage } from '../../lib/content';
+import { getLocalePaths } from '../../lib/paths';
+import { pagePath } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+export const getStaticPaths = getLocalePaths;
+const locale = Astro.params.lang as Locale;
+const p = await getPage<any>(locale, 'thanks');
+---
+<BaseLayout locale={locale} title={p.seo.title} description={p.seo.description} headerOverlay={false} noindex>
+  <section class="container-site flex min-h-[70vh] flex-col items-start justify-center gap-8 pt-40 pb-24">
+    <h1 class="text-title">{p.heading}</h1>
+    <p class="text-statement max-w-3xl">{p.body}</p>
+    <Button href={pagePath(locale, 'home')} variant="secondary">{p.back}</Button>
+  </section>
+</BaseLayout>

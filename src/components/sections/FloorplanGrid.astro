@@ -1,0 +1,85 @@
+---
+import FloorplanCard from './FloorplanCard.astro';
+import { getSuites } from '../../lib/content';
+import { t } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+interface Props { locale: Locale; note?: string; }
+const { locale, note } = Astro.props;
+const suites = await getSuites();
+const beds = [
+  { value: 'all', label: t(locale, 'filter.all') },
+  { value: 'studio', label: t(locale, 'suite.type.studio') },
+  { value: '1bed', label: t(locale, 'suite.type.1bed') },
+  { value: '1bed-den', label: t(locale, 'suite.type.1bed-den') },
+  { value: '2bed', label: t(locale, 'suite.type.2bed') },
+  { value: '2bed-den', label: t(locale, 'suite.type.2bed-den') },
+  { value: '3bed', label: t(locale, 'suite.type.3bed') },
+];
+const movein = [
+  { value: 'any', label: t(locale, 'filter.any') },
+  { value: 'now', label: t(locale, 'filter.now') },
+  { value: '60', label: locale === 'fr' ? '60 jours' : '60 days' },
+];
+const chip = 'rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium transition-colors hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-page';
+---
+<div data-floorplans>
+  <div class="flex flex-col gap-6 border-y border-line py-6 lg:flex-row lg:items-center lg:justify-between">
+    <div class="flex min-w-0 flex-col gap-5 lg:flex-row lg:gap-10">
+      <fieldset class="min-w-0 lg:flex lg:items-center lg:gap-3">
+        <legend class="text-label-ext mb-3 text-ink-soft lg:float-left lg:mr-2 lg:mb-0">{t(locale, 'filter.beds')}</legend>
+        <div class="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:overflow-visible lg:px-0">
+          {beds.map((b, i) => <button type="button" class:list={[chip, 'shrink-0']} data-filter="type" data-value={b.value} aria-pressed={i === 0 ? 'true' : 'false'}>{b.label}</button>)}
+        </div>
+      </fieldset>
+      <fieldset class="min-w-0 lg:flex lg:items-center lg:gap-3">
+        <legend class="text-label-ext mb-3 text-ink-soft lg:float-left lg:mr-2 lg:mb-0">{t(locale, 'filter.movein')}</legend>
+        <div class="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:overflow-visible lg:px-0">
+          {movein.map((m, i) => <button type="button" class:list={[chip, 'shrink-0']} data-filter="movein" data-value={m.value} aria-pressed={i === 0 ? 'true' : 'false'}>{m.label}</button>)}
+        </div>
+      </fieldset>
+    </div>
+    <p class="text-sm" aria-live="polite"><span data-count>{suites.length}</span> {t(locale, 'filter.count')}</p>
+  </div>
+  <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10" data-grid>
+    {suites.map((s) => <FloorplanCard locale={locale} suite={s} />)}
+  </div>
+  <div class="mt-10 hidden border border-line p-10 text-center" data-empty>
+    <p class="text-ink-soft">{t(locale, 'filter.empty')}</p>
+    <button type="button" class="mt-4 font-semibold underline underline-offset-4" data-reset>{t(locale, 'filter.reset')}</button>
+  </div>
+  {note && <p class="mt-8 text-sm text-ink-soft">{note}</p>}
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-floorplans]');
+  if (root) {
+    const cards = [...root.querySelectorAll<HTMLElement>('[data-suite]')];
+    const state = { type: 'all', movein: 'any' };
+    const params = new URLSearchParams(location.search);
+    if (params.get('type')) state.type = params.get('type')!;
+    const apply = () => {
+      const soon = Date.now() + 60 * 864e5;
+      let n = 0;
+      for (const c of cards) {
+        const typeOk = state.type === 'all' || c.dataset.type === state.type;
+        const m = c.dataset.movein!;
+        const moveOk = state.movein === 'any' || (state.movein === 'now' && m === 'now') || (state.movein === '60' && (m === 'now' || (m !== 'waitlist' && Date.parse(m) <= soon)));
+        const show = typeOk && moveOk;
+        c.hidden = !show;
+        if (show) n++;
+      }
+      root.querySelector('[data-count]')!.textContent = String(n);
+      root.querySelector('[data-empty]')!.classList.toggle('hidden', n > 0);
+      root.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) => b.setAttribute('aria-pressed', String(state[b.dataset.filter as 'type' | 'movein'] === b.dataset.value)));
+    };
+    root.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((b) => b.addEventListener('click', () => {
+      state[b.dataset.filter as 'type' | 'movein'] = b.dataset.value!;
+      const url = new URL(location.href);
+      state.type === 'all' ? url.searchParams.delete('type') : url.searchParams.set('type', state.type);
+      history.replaceState(null, '', url);
+      apply();
+    }));
+    root.querySelector('[data-reset]')?.addEventListener('click', () => { state.type = 'all'; state.movein = 'any'; apply(); });
+    apply();
+  }
+</script>

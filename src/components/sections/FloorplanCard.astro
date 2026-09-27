@@ -1,0 +1,35 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from '../ui/Icon.astro';
+import { t, formatPrice, formatDate } from '../../lib/i18n';
+import type { Locale, UiKey } from '../../i18n/ui';
+interface Props { locale: Locale; suite: CollectionEntry<'suites'>; }
+const { locale, suite } = Astro.props;
+const s = suite.data;
+const avail = s.availability === 'now' ? t(locale, 'suite.available') : s.availability === 'waitlist' ? t(locale, 'suite.waitlist') : formatDate(s.availability, locale, { month: 'short', day: 'numeric' });
+const badge = s.availability === 'now' ? 'bg-secondary text-ink' : s.availability === 'waitlist' ? 'border border-line text-ink-soft' : 'bg-muted text-ink';
+const typeLabel = t(locale, `suite.type.${s.type}` as UiKey);
+const meta = [s.beds === 0 ? t(locale, 'suite.type.studio') : typeLabel.replace(' Penthouse', '').replace('Penthouse ', ''), `${s.baths} ${t(locale, 'suite.bath')}`, `${s.sqft.toLocaleString(locale === 'fr' ? 'fr-CA' : 'en-CA')} ${t(locale, 'suite.sqft')}`];
+const movein = s.availability === 'now' ? 'now' : s.availability === 'waitlist' ? 'waitlist' : s.availability;
+---
+<article class="flex flex-col border border-line bg-surface" data-suite data-type={s.type} data-beds={s.beds} data-price={s.priceFrom} data-movein={movein}>
+  <div class="grid aspect-[4/3] place-items-center border-b border-line p-10">
+    {s.floorplanImage ? <img src={s.floorplanImage} alt={`${s.name} floorplan`} loading="lazy" class="max-h-full" /> : (
+      <svg viewBox="0 0 220 160" class="w-3/5 text-ink" fill="none" stroke="currentColor" stroke-width="2" role="img" aria-label={`${s.name} — ${t(locale, 'suite.floorplan')}`}>
+        <rect x="1" y="1" width="218" height="158" /><path d="M120 1v70M120 100v59M1 90h80M110 90h10M160 71h59M120 71h20" /><path d="M81 90a29 29 0 0 1 29-29" stroke-width="1" /><rect x="140" y="110" width="60" height="30" stroke-width="1" />
+      </svg>
+    )}
+  </div>
+  <div class="flex flex-1 flex-col gap-3 p-6">
+    <div class="flex items-center justify-between gap-3">
+      <p class="text-label-ext text-accent">{typeLabel}</p>
+      <span class:list={['rounded-full px-2.5 py-1 text-xs font-medium', badge]}>{avail}</span>
+    </div>
+    <h3 class="font-serif text-2xl">{s.name}</h3>
+    <p class="text-sm text-ink-soft">{meta.join('  ·  ')}</p>
+    <div class="mt-auto flex items-center justify-between pt-3">
+      <p class="font-medium">{t(locale, 'suite.from')} {formatPrice(s.priceFrom, locale)}{t(locale, 'suite.perMonth')}</p>
+      <span class="inline-flex items-center gap-2 text-[0.9375rem] font-semibold">{t(locale, 'suite.floorplan')} <Icon name="arrow-right" /></span>
+    </div>
+  </div>
+</article>

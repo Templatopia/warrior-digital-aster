@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import { l } from '../../lib/i18n';
+import { byOrder } from '../../lib/content';
+import type { Locale } from '../../i18n/ui';
+interface Props { locale: Locale; page: string; label: string; heading: string; }
+const { locale, page, label, heading } = Astro.props;
+const faqs = (await getCollection('faqs', (f) => f.data.pages.includes(page))).sort(byOrder);
+---
+<section class="container-site grid gap-10 py-24 md:grid-cols-[400px_1fr] md:gap-24 md:py-32">
+  <div class="space-y-5">
+    <p class="text-paren text-ink-soft">{label}</p>
+    <h2 class="text-feature">{heading}</h2>
+  </div>
+  <div class="border-t border-line">
+    {faqs.map((f, i) => (
+      <details class="group border-b border-line" open={i === 0}>
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-6 font-serif text-xl md:text-2xl [&::-webkit-details-marker]:hidden">
+          {l(f.data.question, locale)}
+          <span class="relative size-4 shrink-0" aria-hidden="true"><span class="absolute top-1/2 left-0 h-px w-4 bg-current"></span><span class="absolute top-0 left-1/2 h-4 w-px bg-current transition-transform group-open:scale-y-0"></span></span>
+        </summary>
+        <p class="max-w-2xl pb-6 text-ink-soft">{l(f.data.answer, locale)}</p>
+      </details>
+    ))}
+  </div>
+</section>

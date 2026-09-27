@@ -1,0 +1,12 @@
+[
+  { "id": "alder", "name": "The Alder", "type": "studio", "beds": 0, "baths": 1, "sqft": 420, "priceFrom": 2050, "availability": "now", "order": 1, "floorplanImage": null, "yardiId": null },
+  { "id": "birch", "name": "The Birch", "type": "studio", "beds": 0, "baths": 1, "sqft": 465, "priceFrom": 2150, "availability": "now", "order": 2, "floorplanImage": null, "yardiId": null },
+  { "id": "cedar", "name": "The Cedar", "type": "1bed", "beds": 1, "baths": 1, "sqft": 540, "priceFrom": 2450, "availability": "now", "order": 3, "floorplanImage": null, "yardiId": null },
+  { "id": "dogwood", "name": "The Dogwood", "type": "1bed", "beds": 1, "baths": 1, "sqft": 590, "priceFrom": 2575, "availability": "2026-11-01", "order": 4, "floorplanImage": null, "yardiId": null },
+  { "id": "elm", "name": "The Elm", "type": "1bed-den", "beds": 1, "baths": 1, "sqft": 650, "priceFrom": 2795, "availability": "now", "order": 5, "floorplanImage": null, "yardiId": null },
+  { "id": "fir", "name": "The Fir", "type": "1bed-den", "beds": 1, "baths": 2, "sqft": 700, "priceFrom": 2950, "availability": "waitlist", "order": 6, "floorplanImage": null, "yardiId": null },
+  { "id": "grove", "name": "The Grove", "type": "2bed", "beds": 2, "baths": 2, "sqft": 820, "priceFrom": 3450, "availability": "now", "order": 7, "floorplanImage": null, "yardiId": null },
+  { "id": "hazel", "name": "The Hazel", "type": "2bed", "beds": 2, "baths": 2, "sqft": 880, "priceFrom": 3625, "availability": "2026-12-01", "order": 8, "floorplanImage": null, "yardiId": null },
+  { "id": "juniper", "name": "The Juniper", "type": "2bed-den", "beds": 2, "baths": 2, "sqft": 980, "priceFrom": 3995, "availability": "now", "order": 9, "floorplanImage": null, "yardiId": null },
+  { "id": "laurel", "name": "The Laurel", "type": "3bed", "beds": 3, "baths": 2.5, "sqft": 1350, "priceFrom": 5400, "availability": "waitlist", "order": 10, "floorplanImage": null, "yardiId": null }
+]

@@ -1,0 +1,27 @@
+{
+  "seo": { "title": "Maison Aster | Apartments for Rent in Millbrook Commons, Toronto", "description": "Studio to three-bedroom rental suites from $2,050/month, with a rooftop terrace, fitness studio and pet spa, 4 minutes from Millbrook Station. Book a tour." },
+  "hero": { "marquee": "Maison Aster", "eyebrow": "Now leasing · Millbrook Commons, Toronto", "subline": "Studio to three-bedroom rentals, from $2,050 a month.", "photo": "heroLiving" },
+  "summary": "Maison Aster is a 312-suite rental building at 120 Aster Lane in Toronto’s Millbrook Commons, with studios to three-bedroom penthouses from $2,050 a month.",
+  "philosophy": { "photo": "wallClock", "quote": "“A home should be the easiest part of your life.”", "attribution": "Maison Aster", "attributionLabel": "(Our approach)", "marquee": "Millbrook Commons", "label": "(Philosophy)", "statement": "Renting should feel like owning, without the hassle. We pair condo-quality homes with on-site service and a neighbourhood worth walking." },
+  "features": {
+    "label": "(Why Maison Aster)", "heading": "Four reasons residents stay.",
+    "items": [
+      { "number": "01", "heading": "Four minutes to everything", "body": "Millbrook Station, the ravine trail and the Commons market are all within a short walk. Downtown is 15 minutes by subway.", "photo": "torontoSkyline", "link": { "label": "Explore the neighbourhood", "page": "neighbourhood" } },
+      { "number": "02", "heading": "Suites with room to breathe", "body": "Nine-foot ceilings, floor-to-ceiling windows and in-suite laundry. Ten floorplans, from 420 sq ft studios to a 1,350 sq ft penthouse.", "photo": "suiteLivingWarm", "link": { "label": "Explore suites", "page": "suites" } },
+      { "number": "03", "heading": "Eight spaces, all included", "body": "A rooftop terrace, fitness studio, co-working lounge and pet spa. No amenity fees, ever.", "photo": "fitness", "link": { "label": "Explore amenities", "page": "amenities" } },
+      { "number": "04", "heading": "Neighbours, not strangers", "body": "On-site management, 24/7 maintenance and a resident calendar of rooftop dinners, run club and movie nights.", "photo": "communityDinner", "link": { "label": "Life at Maison Aster", "page": "lifestyle" } }
+    ]
+  },
+  "suiteIndex": { "label": "(Suites)", "heading": "Ten floorplans. One standard.", "rows": [
+    { "name": "Studio", "types": ["studio"], "photo": "bedroomWhite" },
+    { "name": "One Bedroom", "types": ["1bed", "1bed-den"], "photo": "suiteLivingWarm" },
+    { "name": "Two Bedroom", "types": ["2bed", "2bed-den"], "photo": "dining" },
+    { "name": "Penthouse", "types": ["3bed"], "photo": "openLiving" }
+  ] },
+  "band": { "photo": "buildingTower", "caption": "120 Aster Lane · 24 storeys · 312 suites" },
+  "slider": { "heading": "Designed for the way you live", "body": "Warm oak floors, quartz kitchens and daylight on three sides. Take a look inside.", "slides": [
+    { "photo": "dining", "caption": "Dining · The Juniper" }, { "photo": "livingGrey", "caption": "Living room · The Grove" }, { "photo": "kitchenWhite", "caption": "Kitchen · The Elm" }, { "photo": "bedroomDark", "caption": "Primary bedroom · The Laurel" }, { "photo": "bathroom", "caption": "Bathroom · The Laurel" }, { "photo": "readingNook", "caption": "Den · The Fir" }
+  ] },
+  "cta": { "heading": "A home, well kept. Come see it for yourself." },
+  "next": { "photo": "openLiving", "subtitle": "Ten floorplans, studio to three-bedroom penthouse" }
+}

@@ -1,0 +1,7 @@
+[
+  { "id": "movie-night", "date": "2026-10-04", "title": { "en": "Rooftop movie night", "fr": "Cinéma sur le toit" }, "location": { "en": "Level 24", "fr": "Niveau 24" } },
+  { "id": "potluck", "date": "2026-10-12", "title": { "en": "Thanksgiving potluck", "fr": "Repas-partage de l’Action de grâce" }, "location": { "en": "Resident lounge", "fr": "Salon des résidents" } },
+  { "id": "run-club", "date": "2026-10-19", "title": { "en": "Run club: ravine loop", "fr": "Club de course : boucle du ravin" }, "location": { "en": "Lobby", "fr": "Hall d’entrée" } },
+  { "id": "wine", "date": "2026-10-26", "title": { "en": "Natural wine tasting", "fr": "Dégustation de vins nature" }, "location": { "en": "Resident lounge", "fr": "Salon des résidents" } },
+  { "id": "pet-portraits", "date": "2026-11-02", "title": { "en": "Pet portraits", "fr": "Portraits d’animaux" }, "location": { "en": "Pet spa", "fr": "Spa pour animaux" } }
+]

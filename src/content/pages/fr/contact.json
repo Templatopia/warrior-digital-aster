@@ -1,0 +1,8 @@
+{
+  "seo": { "title": "Contact et visites | Maison Aster", "description": "Réservez une visite en personne ou par vidéo de Maison Aster, au 120, Aster Lane, Toronto. Bureau ouvert 7 jours sur 7. Appelez le 416 555-0142 ou écrivez-nous." },
+  "hero": { "title": "Venez nous voir", "eyebrow": "(Contact)", "photo": "loungeChairs" },
+  "summary": "Le bureau de location de Maison Aster, au 120, Aster Lane à Toronto, est ouvert sept jours sur sept pour les visites en personne et par vidéo.",
+  "form": { "label": "(Réserver une visite)", "heading": "Dites-nous ce que vous cherchez. Nous organiserons une visite en personne ou par vidéo, généralement en moins d’une journée." },
+  "faq": { "label": "(FAQ)", "heading": "Avant votre visite." },
+  "next": { "photo": "heroLiving", "subtitle": "Retour au début" }
+}

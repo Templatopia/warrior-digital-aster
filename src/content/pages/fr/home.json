@@ -1,0 +1,27 @@
+{
+  "seo": { "title": "Maison Aster | Appartements à louer à Millbrook Commons, Toronto", "description": "Du studio au trois chambres dès 2 050 $/mois, avec terrasse sur le toit, gym et spa pour animaux, à 4 minutes de la station Millbrook. Réservez une visite." },
+  "hero": { "marquee": "Maison Aster", "eyebrow": "Location en cours · Millbrook Commons, Toronto", "subline": "Du studio au trois chambres, à partir de 2 050 $ par mois.", "photo": "heroLiving" },
+  "summary": "Maison Aster est un immeuble locatif de 312 appartements au 120, Aster Lane, à Millbrook Commons (Toronto), du studio au penthouse de trois chambres, à partir de 2 050 $ par mois.",
+  "philosophy": { "photo": "wallClock", "quote": "« Un chez-soi devrait être la partie la plus simple de la vie. »", "attribution": "Maison Aster", "attributionLabel": "(Notre approche)", "marquee": "Millbrook Commons", "label": "(Philosophie)", "statement": "Louer devrait ressembler à être propriétaire, sans les tracas. Des logements de qualité condo, un service sur place et un quartier où il fait bon marcher." },
+  "features": {
+    "label": "(Pourquoi Maison Aster)", "heading": "Quatre raisons de rester.",
+    "items": [
+      { "number": "01", "heading": "À quatre minutes de tout", "body": "La station Millbrook, le sentier du ravin et le marché Commons sont à deux pas. Le centre-ville est à 15 minutes en métro.", "photo": "torontoSkyline", "link": { "label": "Découvrir le quartier", "page": "neighbourhood" } },
+      { "number": "02", "heading": "De l’espace pour respirer", "body": "Plafonds de neuf pieds, fenêtres pleine hauteur et laveuse-sécheuse dans chaque appartement. Dix plans, du studio de 420 pi² au penthouse de 1 350 pi².", "photo": "suiteLivingWarm", "link": { "label": "Voir les appartements", "page": "suites" } },
+      { "number": "03", "heading": "Huit espaces, tout compris", "body": "Terrasse sur le toit, gym, salon de cotravail et spa pour animaux. Jamais de frais de commodités.", "photo": "fitness", "link": { "label": "Voir les commodités", "page": "amenities" } },
+      { "number": "04", "heading": "Des voisins, pas des inconnus", "body": "Gestion sur place, entretien 24 h sur 24 et un calendrier de soupers sur le toit, club de course et soirées cinéma.", "photo": "communityDinner", "link": { "label": "La vie à Maison Aster", "page": "lifestyle" } }
+    ]
+  },
+  "suiteIndex": { "label": "(Appartements)", "heading": "Dix plans. Une seule exigence.", "rows": [
+    { "name": "Studio", "types": ["studio"], "photo": "bedroomWhite" },
+    { "name": "Une chambre", "types": ["1bed", "1bed-den"], "photo": "suiteLivingWarm" },
+    { "name": "Deux chambres", "types": ["2bed", "2bed-den"], "photo": "dining" },
+    { "name": "Penthouse", "types": ["3bed"], "photo": "openLiving" }
+  ] },
+  "band": { "photo": "buildingTower", "caption": "120, Aster Lane · 24 étages · 312 appartements" },
+  "slider": { "heading": "Pensé pour votre façon de vivre", "body": "Planchers de chêne, cuisines en quartz et lumière sur trois côtés. Jetez un coup d’œil.", "slides": [
+    { "photo": "dining", "caption": "Salle à manger · The Juniper" }, { "photo": "livingGrey", "caption": "Salon · The Grove" }, { "photo": "kitchenWhite", "caption": "Cuisine · The Elm" }, { "photo": "bedroomDark", "caption": "Chambre principale · The Laurel" }, { "photo": "bathroom", "caption": "Salle de bain · The Laurel" }, { "photo": "readingNook", "caption": "Bureau · The Fir" }
+  ] },
+  "cta": { "heading": "Un chez-soi, bien entretenu. Venez le voir par vous-même." },
+  "next": { "photo": "openLiving", "subtitle": "Dix plans, du studio au penthouse de trois chambres" }
+}

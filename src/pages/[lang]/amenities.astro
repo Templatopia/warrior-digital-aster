@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroPage from '../../components/sections/HeroPage.astro';
+import SectionHead from '../../components/sections/SectionHead.astro';
+import AmenityMosaic from '../../components/sections/AmenityMosaic.astro';
+import ImageBand from '../../components/sections/ImageBand.astro';
+import ServicesGrid from '../../components/sections/ServicesGrid.astro';
+import CtaStatement from '../../components/sections/CtaStatement.astro';
+import NextPage from '../../components/sections/NextPage.astro';
+import { getPage } from '../../lib/content';
+import { getLocalePaths } from '../../lib/paths';
+import { nextPage, t } from '../../lib/i18n';
+import { breadcrumbSchema } from '../../lib/schema';
+import type { Locale } from '../../i18n/ui';
+
+export const getStaticPaths = getLocalePaths;
+const locale = Astro.params.lang as Locale;
+const p = await getPage<any>(locale, 'amenities');
+---
+<BaseLayout locale={locale} title={p.seo.title} description={p.seo.description} schema={breadcrumbSchema(locale, 'amenities', t(locale, 'nav.amenities'))}>
+  <HeroPage locale={locale} {...p.hero} />
+  <section class="container-site py-24 md:py-32">
+    <SectionHead label={p.mosaic.label} heading={p.mosaic.heading} summary={p.summary} />
+    <AmenityMosaic locale={locale} />
+  </section>
+  <ImageBand locale={locale} {...p.band} />
+  <ServicesGrid {...p.services} />
+  <CtaStatement locale={locale} heading={p.cta.heading} />
+  <NextPage locale={locale} page={nextPage('amenities')} {...p.next} />
+</BaseLayout>

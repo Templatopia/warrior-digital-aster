@@ -1,0 +1,37 @@
+---
+/** Tour request form. Netlify Forms by default (see site.json → forms); swap `action`/attributes for HubSpot or a CRM webhook. */
+import site from '../../config/site.json';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { t, pagePath } from '../../lib/i18n';
+import type { Locale, UiKey } from '../../i18n/ui';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const types = ['studio', '1bed', '1bed-den', '2bed', '2bed-den', '3bed'];
+const input = 'w-full rounded-sm border border-line bg-surface px-4 py-3.5 text-base outline-none transition focus:border-ink';
+const label = 'mb-2 block text-sm font-medium';
+const months = Array.from({ length: 6 }, (_, i) => { const d = new Date(); d.setMonth(d.getMonth() + i, 1); return new Intl.DateTimeFormat(locale === 'fr' ? 'fr-CA' : 'en-CA', { month: 'long', year: 'numeric' }).format(d); });
+const isNetlify = site.forms.provider === 'netlify';
+---
+<form name={site.forms.name} method="POST" action={pagePath(locale, 'thanks')} data-netlify={isNetlify ? 'true' : undefined} netlify-honeypot="company" class="grid gap-5 sm:grid-cols-2">
+  <input type="hidden" name="form-name" value={site.forms.name} />
+  <input type="hidden" name="language" value={locale} />
+  <p class="hidden"><label>Company <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+  <div><label class={label} for="f-first">{t(locale, 'form.firstName')}</label><input id="f-first" name="first_name" required autocomplete="given-name" class={input} /></div>
+  <div><label class={label} for="f-last">{t(locale, 'form.lastName')}</label><input id="f-last" name="last_name" required autocomplete="family-name" class={input} /></div>
+  <div><label class={label} for="f-email">{t(locale, 'form.email')}</label><input id="f-email" name="email" type="email" required autocomplete="email" class={input} /></div>
+  <div><label class={label} for="f-phone">{t(locale, 'form.phone')}</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" class={input} /></div>
+  <div class="relative"><label class={label} for="f-type">{t(locale, 'form.suiteType')}</label>
+    <select id="f-type" name="suite_type" class:list={[input, 'appearance-none']}><option value="">{t(locale, 'form.select')}</option>{types.map((ty) => <option value={ty}>{t(locale, `suite.type.${ty}` as UiKey)}</option>)}</select>
+    <Icon name="chevron-down" class="pointer-events-none absolute right-4 bottom-4" /></div>
+  <div class="relative"><label class={label} for="f-movein">{t(locale, 'form.moveIn')}</label>
+    <select id="f-movein" name="move_in" class:list={[input, 'appearance-none']}><option value="">{t(locale, 'form.select')}</option>{months.map((m) => <option>{m}</option>)}</select>
+    <Icon name="chevron-down" class="pointer-events-none absolute right-4 bottom-4" /></div>
+  <div class="relative"><label class={label} for="f-tour">{t(locale, 'form.tourType')}</label>
+    <select id="f-tour" name="tour_type" class:list={[input, 'appearance-none']}><option value="in-person">{t(locale, 'form.tour.inPerson')}</option><option value="video">{t(locale, 'form.tour.video')}</option></select>
+    <Icon name="chevron-down" class="pointer-events-none absolute right-4 bottom-4" /></div>
+  <div><label class={label} for="f-date">{t(locale, 'form.date')}</label><input id="f-date" name="preferred_date" type="date" class={input} /></div>
+  <div class="sm:col-span-2"><label class={label} for="f-msg">{t(locale, 'form.message')}</label><textarea id="f-msg" name="message" rows="4" class={input}></textarea></div>
+  <label class="flex items-start gap-3 text-sm text-ink-soft sm:col-span-2"><input type="checkbox" name="consent" value="yes" class="mt-0.5 size-4 accent-[var(--color-accent)]" /> <span>{t(locale, 'form.consent')}</span></label>
+  <div class="sm:col-span-2"><Button type="submit" class="max-sm:w-full">{t(locale, 'form.submit')}</Button></div>
+</form>

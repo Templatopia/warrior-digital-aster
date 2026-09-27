@@ -1,0 +1,72 @@
+---
+import site from '../../config/site.json';
+import Logo from '../ui/Logo.astro';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { t, pagePath, otherLocale, switchLocalePath } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+
+interface Props { locale: Locale; overlay?: boolean; }
+const { locale, overlay = true } = Astro.props;
+const left = ['suites', 'amenities', 'neighbourhood'] as const;
+const right = ['lifestyle', 'gallery', 'contact'] as const;
+const other = otherLocale(locale);
+const altHref = switchLocalePath(Astro.url.pathname, other);
+const current = Astro.url.pathname;
+const isCurrent = (p: string) => current.startsWith(pagePath(locale, p as any));
+---
+<header id="site-header" data-overlay={overlay ? '' : undefined} class="fixed inset-x-0 top-0 z-50 transition-[background-color,color,box-shadow] duration-300">
+  <div class="container-site flex h-16 items-center justify-between md:h-24">
+    <nav aria-label={t(locale, 'nav.primary')} class="hidden flex-1 lg:block">
+      <ul class="flex gap-8 text-[0.9375rem] font-medium">
+        {left.map((p) => <li><a href={pagePath(locale, p)} aria-current={isCurrent(p) ? 'page' : undefined} class="underline-offset-8 hover:underline aria-[current]:underline">{t(locale, `nav.${p}`)}</a></li>)}
+      </ul>
+    </nav>
+    <a href={pagePath(locale, 'home')} class="shrink-0" aria-label={`${site.name} — ${t(locale, 'nav.home')}`}><Logo /></a>
+    <div class="hidden flex-1 items-center justify-end gap-8 text-[0.9375rem] font-medium lg:flex">
+      {right.map((p) => <a href={pagePath(locale, p)} aria-current={isCurrent(p) ? 'page' : undefined} class="underline-offset-8 hover:underline aria-[current]:underline">{t(locale, `nav.${p}`)}</a>)}
+      <a href={altHref} hreflang={other} lang={other} class="opacity-80 hover:opacity-100">{t(locale, 'lang.short')}</a>
+      <Button href={pagePath(locale, 'contact')} size="sm">{t(locale, 'cta.bookTour')}</Button>
+    </div>
+    <button type="button" data-menu-open class="flex items-center gap-2 text-[0.9375rem] font-medium lg:hidden" aria-haspopup="dialog" aria-controls="mobile-menu">
+      {t(locale, 'nav.menu')} <Icon name="menu" size={20} />
+    </button>
+  </div>
+</header>
+
+<dialog id="mobile-menu" class="m-0 h-dvh max-h-none w-screen max-w-none bg-inverse p-0 text-cream backdrop:bg-transparent open:flex open:flex-col" aria-label={t(locale, 'nav.menu')}>
+  <div class="container-site flex h-16 items-center justify-between">
+    <Logo />
+    <button type="button" data-menu-close class="flex items-center gap-2 text-[0.9375rem] font-medium">{t(locale, 'nav.close')} <Icon name="close" size={20} /></button>
+  </div>
+  <nav class="container-site flex-1 overflow-y-auto pt-8" aria-label={t(locale, 'nav.primary')}>
+    <ul class="space-y-1">
+      {[...left, ...right].map((p) => <li><a href={pagePath(locale, p)} class="text-feature block py-1.5">{t(locale, `nav.${p}`)}</a></li>)}
+    </ul>
+  </nav>
+  <div class="container-site space-y-5 pb-8">
+    <Button href={pagePath(locale, 'contact')} class="w-full">{t(locale, 'cta.bookTour')}</Button>
+    <div class="flex items-center justify-between text-sm opacity-80">
+      <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
+      <a href={altHref} hreflang={other} lang={other}>{t(locale, 'lang.switch')}</a>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const onScroll = () => header.toggleAttribute('data-scrolled', window.scrollY > 40);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  const menu = document.getElementById('mobile-menu') as HTMLDialogElement;
+  document.querySelector('[data-menu-open]')?.addEventListener('click', () => menu.showModal());
+  document.querySelector('[data-menu-close]')?.addEventListener('click', () => menu.close());
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.close()));
+</script>
+
+<style>
+  #site-header { background: var(--color-page); color: var(--color-ink); box-shadow: 0 1px 0 var(--color-line); }
+  #site-header[data-overlay]:not([data-scrolled]) { background: transparent; color: var(--color-cream); box-shadow: none; }
+  #site-header[data-scrolled] { background: color-mix(in srgb, var(--color-page) 94%, transparent); backdrop-filter: blur(8px); }
+  dialog[open] { display: flex; }
+</style>

@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MasonryGallery from '../../components/sections/MasonryGallery.astro';
+import CtaStatement from '../../components/sections/CtaStatement.astro';
+import NextPage from '../../components/sections/NextPage.astro';
+import { getPage } from '../../lib/content';
+import { getLocalePaths } from '../../lib/paths';
+import { nextPage, t } from '../../lib/i18n';
+import { breadcrumbSchema } from '../../lib/schema';
+import type { Locale } from '../../i18n/ui';
+
+export const getStaticPaths = getLocalePaths;
+const locale = Astro.params.lang as Locale;
+const p = await getPage<any>(locale, 'gallery');
+---
+<BaseLayout locale={locale} title={p.seo.title} description={p.seo.description} schema={breadcrumbSchema(locale, 'gallery', t(locale, 'nav.gallery'))}>
+  <MasonryGallery locale={locale} title={p.hero.title} />
+  <p class="container-site -mt-6 pb-16 text-sm text-ink-soft">{p.summary}</p>
+  <CtaStatement locale={locale} heading={p.cta.heading} />
+  <NextPage locale={locale} page={nextPage('gallery')} {...p.next} />
+</BaseLayout>

@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroPage from '../../components/sections/HeroPage.astro';
+import SectionHead from '../../components/sections/SectionHead.astro';
+import Numbers from '../../components/sections/Numbers.astro';
+import StaticMap from '../../components/sections/StaticMap.astro';
+import BigList from '../../components/sections/BigList.astro';
+import Features from '../../components/sections/Features.astro';
+import CtaStatement from '../../components/sections/CtaStatement.astro';
+import NextPage from '../../components/sections/NextPage.astro';
+import { getPage, byOrder } from '../../lib/content';
+import { getLocalePaths } from '../../lib/paths';
+import { nextPage, t } from '../../lib/i18n';
+import { breadcrumbSchema } from '../../lib/schema';
+import type { Locale, UiKey } from '../../i18n/ui';
+
+export const getStaticPaths = getLocalePaths;
+const locale = Astro.params.lang as Locale;
+const p = await getPage<any>(locale, 'neighbourhood');
+const places = (await getCollection('places')).sort(byOrder);
+const rows = places.map((pl) => ({ label: t(locale, `place.category.${pl.data.category}` as UiKey), name: pl.data.name, value: `${pl.data.walkMinutes}′` }));
+---
+<BaseLayout locale={locale} title={p.seo.title} description={p.seo.description} schema={breadcrumbSchema(locale, 'neighbourhood', t(locale, 'nav.neighbourhood'))}>
+  <HeroPage locale={locale} {...p.hero} />
+  <section class="container-site pt-24 md:pt-32">
+    <SectionHead label={p.numbers.label} heading={p.numbers.heading} summary={p.summary} />
+    <Numbers items={p.numbers.items} />
+  </section>
+  <section class="container-site py-16 md:py-24"><StaticMap {...p.map} /></section>
+  <section class="container-site pb-24 md:pb-32">
+    <div class="mb-8 flex items-end justify-between gap-4"><h2 class="text-paren text-ink-soft">{p.places.label}</h2><p class="text-sm text-ink-soft">{p.places.note}</p></div>
+    <BigList rows={rows} />
+  </section>
+  <Features locale={locale} items={p.features.items} muted />
+  <CtaStatement locale={locale} heading={p.cta.heading} />
+  <NextPage locale={locale} page={nextPage('neighbourhood')} {...p.next} />
+</BaseLayout>

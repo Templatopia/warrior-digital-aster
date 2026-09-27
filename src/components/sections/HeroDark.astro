@@ -1,0 +1,10 @@
+---
+import Marquee from './Marquee.astro';
+interface Props { title: string; }
+const { title } = Astro.props;
+---
+<section class="overflow-hidden bg-inverse pt-24 pb-10 text-cream md:pt-32 md:pb-14">
+  <h1 class="sr-only">{title}</h1>
+  <Marquee text={title} class="text-mega" speed={60} />
+  <div class="container-site mt-6 md:mt-10"><slot /></div>
+</section>

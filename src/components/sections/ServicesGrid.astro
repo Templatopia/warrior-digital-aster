@@ -1,0 +1,19 @@
+---
+import SectionHead from './SectionHead.astro';
+interface Props { label: string; heading: string; items: { title: string; body: string }[]; }
+const { label, heading, items } = Astro.props;
+---
+<section class="bg-inverse py-24 text-cream md:py-32">
+  <div class="container-site">
+    <SectionHead label={label} heading={heading} tone="dark" />
+    <ul class="mt-16 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+      {items.map((it, i) => (
+        <li class="space-y-3 border-t border-cream/30 pt-5" data-reveal>
+          <p class="text-label-ext opacity-60">{String(i + 1).padStart(2, '0')}</p>
+          <h3 class="font-serif text-2xl">{it.title}</h3>
+          <p class="text-cream/75">{it.body}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

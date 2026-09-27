@@ -1,0 +1,20 @@
+---
+import Photo from '../ui/Photo.astro';
+import Marquee from './Marquee.astro';
+import SectionHead from './SectionHead.astro';
+import type { Locale } from '../../i18n/ui';
+import type { PhotoKey } from '../../data/photos';
+interface Props { locale: Locale; photo: PhotoKey; quote: string; attribution: string; attributionLabel: string; marquee: string; label: string; statement: string; summary?: string; }
+const p = Astro.props;
+---
+<section class="overflow-hidden py-24 md:py-32">
+  <figure class="container-site flex flex-col items-center gap-8 text-center md:gap-10" data-reveal>
+    <Photo photo={p.photo} locale={p.locale} sizes="200px" widths={[200, 400]} class="size-36 md:size-48" />
+    <blockquote class="text-quote max-w-4xl">{p.quote}</blockquote>
+    <figcaption class="text-paren text-ink-soft">{p.attribution}&nbsp;&nbsp;{p.attributionLabel}</figcaption>
+  </figure>
+  <Marquee text={p.marquee} class="text-mega my-10 text-accent md:my-14" speed={55} reverse />
+  <div class="container-site">
+    <SectionHead label={p.label} heading={p.statement} summary={p.summary} />
+  </div>
+</section>

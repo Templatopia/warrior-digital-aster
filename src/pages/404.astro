@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+---
+<BaseLayout locale="en" title="Page not found | Maison Aster" description="The page you’re looking for has moved or no longer exists. Browse suites, amenities and the Millbrook Commons neighbourhood at Maison Aster." headerOverlay={false} noindex>
+  <section class="container-site flex min-h-[70vh] flex-col items-start justify-center gap-8 pt-40 pb-24">
+    <p class="text-paren text-ink-soft">(404)</p>
+    <h1 class="text-title">Lost?</h1>
+    <p class="text-statement max-w-2xl">That page has moved. <span lang="fr">Cette page a été déplacée.</span></p>
+    <div class="flex flex-wrap gap-3"><Button href="/en/">Home</Button><Button href="/fr/" variant="secondary">Accueil</Button></div>
+  </section>
+</BaseLayout>

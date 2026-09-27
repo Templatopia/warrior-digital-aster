@@ -1,0 +1,36 @@
+/*
+ * THEME — the re-skin file.
+ * Values mirror the Figma "Color" collection. To re-skin a client site, change these values
+ * (and the font imports in global.css). Components only use the semantic tokens below.
+ */
+:root {
+  /* Maison Aster (default) */
+  --ma-page: #f5f1ea;       /* color/bg/page */
+  --ma-surface: #ffffff;    /* color/bg/surface */
+  --ma-muted: #eae3d7;      /* color/bg/muted */
+  --ma-inverse: #1f1f1d;    /* color/bg/inverse */
+  --ma-accent: #b5563a;     /* color/bg/accent + text/accent */
+  --ma-accent-hover: #97452d;
+  --ma-secondary: #8a9a84;  /* color/bg/secondary */
+  --ma-ink: #1f1f1d;        /* color/text/primary */
+  --ma-ink-soft: #5e5a53;   /* color/text/secondary */
+  --ma-cream: #f5f1ea;      /* color/text/inverse */
+  --ma-on-accent: #ffffff;  /* color/text/on-accent */
+  --ma-line: #d9d2c5;       /* color/border/default */
+  --ma-line-strong: #1f1f1d;/* color/border/strong */
+}
+
+/* Alternate theme — mirrors the "Alt – Slate" mode in Figma. Add data-theme="slate" to <html>. */
+[data-theme='slate'] {
+  --ma-page: #f4f5f7;
+  --ma-muted: #e6e9ed;
+  --ma-inverse: #16222f;
+  --ma-accent: #8c6a2b;
+  --ma-accent-hover: #6f5322;
+  --ma-secondary: #5f8c8a;
+  --ma-ink: #16222f;
+  --ma-ink-soft: #566271;
+  --ma-cream: #f4f5f7;
+  --ma-line: #c9cfd6;
+  --ma-line-strong: #16222f;
+}

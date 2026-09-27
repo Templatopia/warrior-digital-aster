@@ -1,0 +1,45 @@
+---
+import site from '../../config/site.json';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Photo from '../../components/ui/Photo.astro';
+import LeadForm from '../../components/sections/LeadForm.astro';
+import FaqList from '../../components/sections/FaqList.astro';
+import NextPage from '../../components/sections/NextPage.astro';
+import { getPage } from '../../lib/content';
+import { getLocalePaths } from '../../lib/paths';
+import { nextPage, t, l } from '../../lib/i18n';
+import { breadcrumbSchema, leasingOfficeSchema } from '../../lib/schema';
+import type { Locale } from '../../i18n/ui';
+
+export const getStaticPaths = getLocalePaths;
+const locale = Astro.params.lang as Locale;
+const p = await getPage<any>(locale, 'contact');
+const a = site.address;
+---
+<BaseLayout locale={locale} title={p.seo.title} description={p.seo.description} schema={[breadcrumbSchema(locale, 'contact', t(locale, 'nav.contact')), leasingOfficeSchema(locale)]}>
+  <section class="relative grid bg-inverse text-cream lg:min-h-[860px] lg:grid-cols-[56fr_44fr]">
+    <div class="container-site flex flex-col justify-center gap-10 pt-32 pb-14 lg:!max-w-none lg:pt-40 lg:pb-20">
+      <p class="text-paren">{p.hero.eyebrow}</p>
+      <h1 class="text-title max-w-[8ch]">{p.hero.title}</h1>
+      <p class="max-w-lg text-cream/80">{p.summary}</p>
+      <dl class="grid gap-8 sm:grid-cols-3">
+        <div><dt class="text-label-ext mb-2 opacity-60">{t(locale, 'footer.office')}</dt><dd><address class="not-italic">{a.street}<br />{a.city}, {a.region} {a.postalCode}</address></dd></div>
+        <div><dt class="text-label-ext mb-2 opacity-60">{locale === 'fr' ? 'Heures' : 'Hours'}</dt><dd>{site.hours.map((h) => <span class="block">{l(h.label, locale)} {h.opens}–{h.closes}</span>)}</dd></div>
+        <div><dt class="text-label-ext mb-2 opacity-60">{locale === 'fr' ? 'Téléphone ou courriel' : 'Call or email'}</dt><dd><a href={`tel:${site.phoneHref}`} class="block hover:underline">{site.phone}</a><a href={`mailto:${site.email}`} class="block break-all hover:underline">{site.email}</a></dd></div>
+      </dl>
+    </div>
+    <div class="relative h-[320px] lg:h-auto">
+      <Photo photo={p.hero.photo} locale={locale} eager sizes="(min-width: 1024px) 44vw, 100vw" class="absolute inset-0 h-full w-full" />
+      <div class="absolute inset-x-0 top-0 hidden h-56 bg-gradient-to-b from-ink/60 to-transparent lg:block"></div>
+    </div>
+  </section>
+  <section class="container-site grid gap-12 py-24 md:py-32 lg:grid-cols-[460px_1fr] lg:gap-24" id="book">
+    <div class="space-y-6">
+      <p class="text-paren text-ink-soft">{p.form.label}</p>
+      <h2 class="text-statement">{p.form.heading}</h2>
+    </div>
+    <LeadForm locale={locale} />
+  </section>
+  <div class="bg-muted"><FaqList locale={locale} page="contact" label={p.faq.label} heading={p.faq.heading} /></div>
+  <NextPage locale={locale} page={nextPage('contact')} {...p.next} />
+</BaseLayout>

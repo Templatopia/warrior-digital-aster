@@ -1,0 +1,71 @@
+---
+import '../styles/global.css';
+import site from '../config/site.json';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import { locales, localeTag, switchLocalePath, t } from '../lib/i18n';
+import type { Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  image?: string;
+  schema?: Record<string, any> | Record<string, any>[];
+  headerOverlay?: boolean;
+  noindex?: boolean;
+}
+const { locale, title, description, image, schema, headerOverlay = true, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = image ?? 'https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?auto=format&fit=crop&w=1200&h=630&q=75';
+const schemas = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
+const gtm = site.analytics.gtmId;
+---
+<!doctype html>
+<html lang={localeTag[locale]} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {locales.map((lc) => <link rel="alternate" hreflang={localeTag[lc]} href={new URL(switchLocalePath(Astro.url.pathname, lc), Astro.site)} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(switchLocalePath(Astro.url.pathname, 'en'), Astro.site)} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={localeTag[locale].replace('-', '_')} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#1f1f1d" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    {schemas.map((s) => <script type="application/ld+json" is:inline set:html={JSON.stringify(s)} />)}
+    <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
+    {gtm && (
+      <script is:inline define:vars={{ gtm }}>
+        // GTM loads only after consent. Wire this to the client's consent banner.
+        window.loadAnalytics = () => { (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',gtm); };
+      </script>
+    )}
+  </head>
+  <body class="bg-page text-ink">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:text-page">{t(locale, 'nav.skip')}</a>
+    <Header locale={locale} overlay={headerOverlay} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+    <script>
+      // Reveal-on-scroll for [data-reveal] elements
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries) if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+      }, { rootMargin: '0px 0px -10% 0px' });
+      document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

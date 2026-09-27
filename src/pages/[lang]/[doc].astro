@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPage } from '../../lib/content';
+import { locales } from '../../lib/i18n';
+import { breadcrumbSchema } from '../../lib/schema';
+import type { Locale } from '../../i18n/ui';
+
+export function getStaticPaths() {
+  return locales.flatMap((lang) => (['privacy', 'accessibility', 'terms'] as const).map((doc) => ({ params: { lang, doc } })));
+}
+const locale = Astro.params.lang as Locale;
+const doc = Astro.params.doc as 'privacy' | 'accessibility' | 'terms';
+const p = await getPage<any>(locale, 'legal');
+const d = p[doc];
+---
+<BaseLayout locale={locale} title={`${d.title} | Maison Aster`} description={p.seo.description} headerOverlay={false} schema={breadcrumbSchema(locale, doc, d.title)}>
+  <article class="container-site max-w-3xl pt-40 pb-32 md:pt-48">
+    <h1 class="text-feature mb-10">{d.title}</h1>
+    <div class="space-y-5 text-body-l text-ink-soft">{d.body.map((para: string) => <p>{para}</p>)}</div>
+  </article>
+</BaseLayout>

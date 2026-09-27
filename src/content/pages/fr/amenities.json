@@ -1,0 +1,19 @@
+{
+  "seo": { "title": "Commodités | Toit, gym et cotravail à Maison Aster", "description": "Les résidents de Maison Aster profitent de huit espaces communs sans frais : terrasse sur le toit, gym 24 h sur 24, cotravail, salle de yoga, spa pour animaux et salon." },
+  "hero": { "title": "Commodités", "eyebrow": "(Commodités)", "subline": "Huit espaces communs, du toit au spa pour animaux. Tout compris.", "photo": "rooftop" },
+  "summary": "Les résidents de Maison Aster profitent de huit espaces communs sans frais supplémentaires, dont une terrasse sur le toit, un gym 24 h sur 24, du cotravail et un spa pour animaux.",
+  "mosaic": { "label": "(Ce qui est inclus)", "heading": "Aucuns frais de commodités. Chaque espace est conçu pour servir tous les jours, pas seulement pendant une visite." },
+  "band": { "photo": "balconies", "caption": "Le service, intégré" },
+  "services": { "label": "(Aussi inclus)", "heading": "Les détails qu’on remarque au jour 300, pas seulement au premier jour.", "items": [
+    { "title": "Équipe sur place", "body": "Location et gestion dans l’immeuble, sept jours sur sept." },
+    { "title": "Entretien 24 h sur 24", "body": "Intervention d’urgence en tout temps et demandes en ligne." },
+    { "title": "Salle à colis intelligente", "body": "Casiers avec rangement réfrigéré pour l’épicerie." },
+    { "title": "Rangement à vélos", "body": "Supports sécurisés et poste de réparation au P1." },
+    { "title": "Recharge de VÉ", "body": "Bornes de niveau 2 au garage souterrain." },
+    { "title": "Appli des résidents", "body": "Réservez des espaces, payez le loyer et écrivez à l’équipe." },
+    { "title": "Entrée sans clé", "body": "Une seule puce pour l’appartement, le hall et les commodités." },
+    { "title": "Suite d’invités", "body": "Réservable pour la famille et les amis de passage." }
+  ] },
+  "cta": { "heading": "Un chez-soi, bien entretenu. Venez le voir par vous-même." },
+  "next": { "photo": "cityStreet", "subtitle": "Millbrook Commons, à quatre minutes de tout" }
+}
