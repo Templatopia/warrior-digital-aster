@@ -7,10 +7,53 @@ interface Props { locale: Locale; page: PageKey; photo: PhotoKey; subtitle: stri
 const { locale, page, photo, subtitle } = Astro.props;
 const title = t(locale, `nav.${page}`);
 ---
-<a href={pagePath(locale, page)} data-next-page class="group relative isolate flex h-[440px] flex-col items-center justify-center gap-4 overflow-hidden text-center text-cream md:h-[640px]">
+<a href={pagePath(locale, page)} data-next-page data-astro-prefetch="viewport" class="group relative isolate flex h-[440px] flex-col items-center justify-center gap-4 overflow-hidden text-center text-cream md:h-[640px]">
   <Photo photo={photo} locale={locale} class="absolute inset-0 -z-20 h-full w-full transition-transform duration-[1.4s] ease-out group-hover:scale-105" alt="" />
   <span class="absolute inset-0 -z-10 bg-[rgb(20_20_18/0.45)]" aria-hidden="true"></span>
   <span class="text-paren rounded-full border border-cream px-3.5 py-1">{t(locale, 'next.label')}</span>
   <span class="text-title px-4 [overflow-wrap:anywhere]">{title}</span>
   <span class="text-body-l px-4">{subtitle}</span>
 </a>
+
+<script>
+  // Curtain transition for the "Next page" banner. Progressive enhancement: without JS (or with
+  // reduced motion) it is an ordinary link. Uses only CSS transforms, so it works in every modern browser.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll<HTMLAnchorElement>('[data-next-page]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      if (reduce.matches || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      const href = link.href;
+      const rect = link.getBoundingClientRect();
+      const panel = link.cloneNode(true) as HTMLElement;
+      panel.removeAttribute('href');
+      panel.removeAttribute('data-next-page');
+      panel.setAttribute('aria-hidden', 'true');
+      panel.classList.add('vt-panel');
+      panel.style.transform = `translate3d(0, ${Math.max(0, rect.top)}px, 0)`;
+      document.body.appendChild(panel);
+      link.style.visibility = 'hidden';
+      let done = false;
+      const go = () => {
+        if (done) return;
+        done = true;
+        try { sessionStorage.setItem('vt', 'next'); } catch {}
+        window.location.href = href;
+      };
+      // Next frame: animate the panel up to fill the screen and recede the current page.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        document.documentElement.classList.add('vt-leaving');
+        panel.style.transform = 'translate3d(0, 0, 0)';
+      }));
+      panel.addEventListener('transitionend', (ev) => { if (ev.propertyName === 'transform') go(); });
+      window.setTimeout(go, 1100); // safety net if transitionend doesn't fire
+    });
+  });
+  // Back/forward cache: restore the page cleanly if the user comes back to it.
+  window.addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    document.documentElement.classList.remove('vt-leaving');
+    document.querySelectorAll('.vt-panel').forEach((el) => el.remove());
+    document.querySelectorAll<HTMLElement>('[data-next-page]').forEach((el) => (el.style.visibility = ''));
+  });
+</script>

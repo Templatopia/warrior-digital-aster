@@ -129,24 +129,26 @@
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
-/* ---------- Page transitions (cross-document View Transitions, progressive enhancement) ---------- */
-@view-transition { navigation: auto; }
-
-/* Default: a quick, soft cross-fade between any two pages */
-::view-transition-old(root),
-::view-transition-new(root) { animation-duration: 0.45s; animation-timing-function: var(--ease-out-soft); }
-
-/* "Next page" banner: the next page slides gently up from the bottom over the current one */
-html:active-view-transition-type(slide-up)::view-transition-old(root) {
-  animation: vt-recede 1.1s var(--ease-out-soft) both;
+/* ---------- Page transitions ----------
+ * "Next page" banner: the banner grows up to fill the screen, then the next page loads underneath it.
+ * Plain CSS transforms + a full page load, so it behaves the same in every modern browser (no View Transitions API).
+ */
+.vt-panel {
+  position: fixed; inset: 0 auto auto 0; z-index: 200;
+  width: 100%; height: 100vh; height: 100lvh;
+  transition: transform 0.9s var(--ease-out-soft);
+  will-change: transform;
+  pointer-events: none;
 }
-html:active-view-transition-type(slide-up)::view-transition-new(root) {
-  animation: vt-rise 1.1s var(--ease-out-soft) both;
-  box-shadow: 0 -24px 60px rgb(0 0 0 / 0.25);
+html.vt-leaving #main, html.vt-leaving footer, html.vt-leaving #site-header {
+  transform: translateY(-10vh);
+  filter: brightness(0.55);
+  transition: transform 0.9s var(--ease-out-soft), filter 0.9s var(--ease-out-soft);
 }
-@keyframes vt-rise { from { transform: translateY(100vh); } to { transform: translateY(0); } }
-@keyframes vt-recede { from { transform: translateY(0); filter: brightness(1); } to { transform: translateY(-15vh); filter: brightness(0.55); } }
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+/* Arriving page: the banner's dark tint lifts to reveal the new page */
+html.vt-arrive body::after {
+  content: ''; position: fixed; inset: 0; z-index: 200; pointer-events: none;
+  background: rgb(20 20 18); opacity: 0.45;
+  animation: vt-lift 0.8s ease-out 0.05s forwards;
 }
+@keyframes vt-lift { to { opacity: 0; visibility: hidden; } }

@@ -8,6 +8,8 @@ import site from './src/config/site.json' with { type: 'json' };
 export default defineConfig({
   site: site.url,
   trailingSlash: 'ignore',
+  // Prefetch pages marked with data-astro-prefetch (the "Next page" banner) so the transition lands instantly.
+  prefetch: { prefetchAll: false, defaultStrategy: 'viewport' },
   i18n: {
     locales: site.locales,
     defaultLocale: site.defaultLocale,
