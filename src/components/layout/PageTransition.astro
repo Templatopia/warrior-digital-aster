@@ -1,0 +1,93 @@
+---
+// Site-wide page transition (see "Page transitions" in global.css).
+// Leave: old page lifts away while a solid curtain rises from the bottom, labelled with the destination.
+// Arrive: the new page paints already covered by the curtain, which keeps rising off the top.
+// Progressive enhancement: with no JS, reduced motion, modifier-clicks, new tabs, downloads, hash links,
+// external links or tel:/mailto: links, it is a normal navigation.
+---
+<div class="vt-curtain" aria-hidden="true">
+  <span class="vt-curtain__line"></span>
+  <span class="vt-curtain__label text-title" data-vt-curtain-label></span>
+</div>
+<script is:inline>
+  // Runs as soon as the curtain is parsed, before first paint: show the label of the page we are arriving on.
+  try {
+    if (document.documentElement.classList.contains('vt-arrive')) {
+      var l = sessionStorage.getItem('vt-label');
+      if (l) document.querySelector('[data-vt-curtain-label]').textContent = l;
+      sessionStorage.removeItem('vt-label');
+    }
+  } catch (e) {}
+</script>
+
+<script>
+  const root = document.documentElement;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const curtain = document.querySelector<HTMLElement>('.vt-curtain');
+  const label = document.querySelector<HTMLElement>('[data-vt-curtain-label]');
+  const LEAVE_MS = 750;
+
+  // Arrive: tidy up once the curtain has gone (plus a fallback in case animations never fire).
+  const endArrive = () => root.classList.remove('vt-arrive');
+  if (root.classList.contains('vt-arrive')) {
+    curtain?.addEventListener('animationend', (e) => { if (e.target === curtain) endArrive(); });
+    window.setTimeout(endArrive, 2000);
+  }
+
+  const eligible = (a: HTMLAnchorElement, e: MouseEvent) => {
+    if (reduce.matches || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+    if (a.hasAttribute('download') || a.hasAttribute('data-no-vt')) return false;
+    if (a.target && a.target !== '_self') return false;
+    const url = new URL(a.href, location.href);
+    if (url.origin !== location.origin || !/^https?:$/.test(url.protocol)) return false;
+    if (url.pathname === location.pathname && url.search === location.search) return false; // same page / hash link
+    if (/\.(pdf|jpe?g|png|webp|avif|svg|zip|xml|txt)$/i.test(url.pathname)) return false;
+    return true;
+  };
+
+  const labelFor = (a: HTMLAnchorElement) => {
+    const text = (a.dataset.vtLabel || a.textContent?.trim() || a.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
+    return text.length > 0 && text.length <= 40 ? text : '';
+  };
+
+  let leaving = false;
+  document.addEventListener('click', (e) => {
+    const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
+    if (!a || leaving || !eligible(a, e)) return;
+    e.preventDefault();
+    leaving = true;
+    const href = a.href;
+    const text = labelFor(a);
+    if (label) label.textContent = text;
+
+    let done = false;
+    const go = () => {
+      if (done) return;
+      done = true;
+      try { sessionStorage.setItem('vt', '1'); sessionStorage.setItem('vt-label', text); } catch {}
+      window.location.href = href;
+    };
+
+    root.classList.remove('vt-arrive');
+    // Links inside the full-screen mobile menu: it is already the curtain colour, so cover instantly
+    // (same task as the menu closing, so no frame of the page underneath is ever painted).
+    const dialog = a.closest('dialog');
+    if (dialog) {
+      root.classList.add('vt-instant', 'vt-leaving');
+      if (dialog.open) dialog.close();
+      window.setTimeout(go, 60);
+      return;
+    }
+    // Two frames so the starting position is committed before the transition begins.
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('vt-leaving')));
+    curtain?.addEventListener('transitionend', (ev) => { if (ev.target === curtain && ev.propertyName === 'transform') go(); });
+    window.setTimeout(go, LEAVE_MS + 150);
+  });
+
+  // Back/forward cache: the page comes back exactly as we left it (curtain down), so reset it.
+  window.addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    leaving = false;
+    root.classList.remove('vt-leaving', 'vt-instant', 'vt-arrive');
+  });
+</script>

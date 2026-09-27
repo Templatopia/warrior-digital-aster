@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import site from '../config/site.json';
+import PageTransition from '../components/layout/PageTransition.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import { locales, localeTag, switchLocalePath, t } from '../lib/i18n';
@@ -47,8 +48,8 @@ const gtm = site.analytics.gtmId;
     {schemas.map((s) => <script type="application/ld+json" is:inline set:html={JSON.stringify(s)} />)}
     <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
     <script is:inline>
-      // Page transitions: if we arrived via the "Next page" banner, lift its tint off the new page.
-      try { if (sessionStorage.getItem('vt') === 'next') { document.documentElement.classList.add('vt-arrive'); sessionStorage.removeItem('vt'); } } catch (e) {}
+      // Page transitions: arriving from an internal link, start covered by the curtain (before first paint).
+      try { if (sessionStorage.getItem('vt') === '1' && !matchMedia('(prefers-reduced-motion: reduce)').matches) { document.documentElement.classList.add('vt-arrive'); } sessionStorage.removeItem('vt'); } catch (e) {}
     </script>
     {gtm && (
       <script is:inline define:vars={{ gtm }}>
@@ -58,6 +59,7 @@ const gtm = site.analytics.gtmId;
     )}
   </head>
   <body class="bg-page text-ink">
+    <PageTransition />
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:text-page">{t(locale, 'nav.skip')}</a>
     <Header locale={locale} overlay={headerOverlay} />
     <main id="main">
