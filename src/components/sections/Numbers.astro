@@ -1,12 +1,14 @@
 ---
 interface Props { items: { value: string; label: string; accent?: boolean }[]; }
 const { items } = Astro.props;
+// "4 min" → big number + smaller unit
+const unit = (v: string) => v.match(/^([\d.,]+)\s+(\D+)$/);
 ---
 <dl class="mt-14 grid grid-cols-3 gap-4 md:gap-10">
   {items.map((n) => (
     <div class="border-t border-line pt-4 md:pt-6" data-reveal>
       <dt class="sr-only">{n.label}</dt>
-      <dd class:list={['text-feature md:text-title', n.accent ? 'text-accent' : 'text-ink']}>{n.value}</dd>
+      <dd class:list={['text-feature md:text-title', n.accent ? 'text-accent' : 'text-ink']}>{unit(n.value) ? <>{unit(n.value)![1]}{' '}<span class="text-[0.35em] tracking-normal">{unit(n.value)![2]}</span></> : n.value}</dd>
       <dd class="mt-2 text-sm text-ink-soft md:text-base">{n.label}</dd>
     </div>
   ))}

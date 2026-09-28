@@ -1,16 +1,164 @@
 {
-  "seo": { "title": "Millbrook Commons Apartments for Rent | Maison Aster", "description": "Live in Millbrook Commons, Toronto: Walk Score 94, 4 minutes to Millbrook Station and 15 minutes to downtown. See cafés, parks, schools and transit near Maison Aster." },
-  "hero": { "title": "Millbrook", "eyebrow": "(Neighbourhood)", "subline": "A leafy, walkable pocket of Toronto, four minutes from the subway.", "photo": "cityStreet" },
+  "seo": {
+    "title": "Millbrook Commons Apartments for Rent | Maison Aster",
+    "description": "Live in Millbrook Commons, Toronto: Walk Score 94, 4 minutes to Millbrook Station and 15 minutes to downtown. See cafés, parks, schools and transit near Maison Aster."
+  },
+  "hero": {
+    "title": "Millbrook",
+    "eyebrow": "(Neighbourhood)",
+    "subline": "A leafy, walkable pocket of Toronto, four minutes from the subway.",
+    "photo": "cityStreet"
+  },
   "summary": "Millbrook Commons is a walkable Toronto neighbourhood with a Walk Score of 94. Maison Aster is 4 minutes from Millbrook Station and 15 minutes from downtown by subway.",
-  "numbers": { "label": "(By the numbers)", "heading": "Independent cafés, a weekend market and one of the city’s best ravine trails, all within a ten-minute walk.", "items": [
-    { "value": "94", "label": "Walk Score" }, { "value": "4′", "label": "To Millbrook Station", "accent": true }, { "value": "15′", "label": "To downtown by subway" }
-  ] },
-  "map": { "label": "Open in Google Maps", "url": "https://maps.google.com/?q=120+Aster+Lane+Toronto" },
-  "places": { "label": "(Around the corner)", "note": "Walking time from the lobby" },
-  "features": { "items": [
-    { "number": "01", "heading": "Coffee, downstairs", "body": "Little Aster Coffee opens at 7am on the building’s retail level. The Commons market runs every Saturday, three minutes away.", "photo": "cafe", "link": { "label": "Open the map", "url": "https://maps.google.com/?q=120+Aster+Lane+Toronto" } },
-    { "number": "02", "heading": "Downtown in fifteen", "body": "Millbrook Station is a four-minute walk. Waterfront parks, the financial district and the arena are a short ride away.", "photo": "torontoSkyline", "link": { "label": "Book a tour", "page": "contact" } }
-  ] },
-  "cta": { "heading": "A home, well kept. Come see it for yourself." },
-  "next": { "photo": "rooftopFriends", "subtitle": "Neighbours, not strangers" }
+  "numbers": {
+    "label": "(By the numbers)",
+    "heading": "Independent cafés, a weekend market and one of the city’s best ravine trails, all within a ten-minute walk.",
+    "items": [
+      {
+        "value": "94",
+        "label": "Walk Score"
+      },
+      {
+        "value": "4 min",
+        "label": "To Millbrook Station",
+        "accent": true
+      },
+      {
+        "value": "15 min",
+        "label": "To downtown by subway"
+      }
+    ]
+  },
+  "map": {
+    "label": "Open in Google Maps",
+    "url": "https://maps.google.com/?q=120+Aster+Lane+Toronto"
+  },
+  "places": {
+    "label": "(Around the corner)",
+    "note": "Walking time from the lobby"
+  },
+  "guide": {
+    "label": "(Local guide)",
+    "slides": [
+      {
+        "tab": "Coffee",
+        "photo": "cafe",
+        "heading": "Our favourite coffee shops",
+        "subheading": "Four spots for a proper cup, all within a ten-minute walk.",
+        "items": [
+          {
+            "name": "Little Aster Coffee",
+            "detail": "Single-origin pour-overs, on our ground floor",
+            "time": "1 min"
+          },
+          {
+            "name": "Grindstone Roasters",
+            "detail": "Small-batch roastery with a sunny patio",
+            "time": "4 min"
+          },
+          {
+            "name": "Café Mireille",
+            "detail": "French pastries and oat-milk cortados",
+            "time": "6 min"
+          },
+          {
+            "name": "Northbound Espresso",
+            "detail": "Open at 6am for the early commute",
+            "time": "8 min"
+          }
+        ]
+      },
+      {
+        "tab": "Restaurants",
+        "photo": "dining",
+        "heading": "Where we like to eat",
+        "subheading": "From weeknight pasta to a special-occasion tasting menu.",
+        "items": [
+          {
+            "name": "Osteria Verde",
+            "detail": "Handmade pasta and a long natural-wine list",
+            "time": "5 min"
+          },
+          {
+            "name": "Sumi Izakaya",
+            "detail": "Charcoal skewers and late-night small plates",
+            "time": "7 min"
+          },
+          {
+            "name": "The Larder",
+            "detail": "Seasonal Canadian cooking and a great weekend brunch",
+            "time": "9 min"
+          },
+          {
+            "name": "Taqueria Cielo",
+            "detail": "Tacos al pastor, fresh tortillas and mezcal",
+            "time": "10 min"
+          }
+        ]
+      },
+      {
+        "tab": "Fitness",
+        "photo": "yoga",
+        "heading": "Fitness studios nearby",
+        "subheading": "Beyond our on-site gym: climbing, reformer, hot yoga and a run club.",
+        "items": [
+          {
+            "name": "Commons Climbing Co.",
+            "detail": "Bouldering walls and beginner nights",
+            "time": "8 min"
+          },
+          {
+            "name": "Reform Pilates Studio",
+            "detail": "Reformer and mat classes, seven days a week",
+            "time": "5 min"
+          },
+          {
+            "name": "Heat Yoga Millbrook",
+            "detail": "Hot, flow and restorative classes",
+            "time": "6 min"
+          },
+          {
+            "name": "Ravine Run Club",
+            "detail": "Free group runs on Tuesdays and Saturdays",
+            "time": "Meets in our lobby"
+          }
+        ]
+      },
+      {
+        "tab": "Landmarks",
+        "photo": "torontoSkyline",
+        "heading": "City landmarks",
+        "subheading": "The places that put Maison Aster at the centre of it all.",
+        "items": [
+          {
+            "name": "Millbrook Station",
+            "detail": "Subway to downtown in 15 minutes",
+            "time": "4 min"
+          },
+          {
+            "name": "Millbrook Ravine Park",
+            "detail": "Trails, an off-leash area and a splash pad",
+            "time": "6 min"
+          },
+          {
+            "name": "Commons Arena",
+            "detail": "Hockey, basketball and concerts",
+            "time": "12 min"
+          },
+          {
+            "name": "Financial District",
+            "detail": "The city’s business core",
+            "time": "15 min by subway"
+          }
+        ]
+      }
+    ]
+  },
+  "cta": {
+    "heading": "A home, well kept. Come see it for yourself."
+  },
+  "next": {
+    "photo": "rooftopFriends",
+    "subtitle": "Neighbours, not strangers"
+  }
 }

@@ -1,16 +1,72 @@
 {
-  "seo": { "title": "Suites & Floorplans | Maison Aster Toronto Rentals", "description": "Ten rental floorplans at Maison Aster, from 420 sq ft studios to a 1,350 sq ft three-bedroom penthouse, from $2,050/month. Filter by size, price and move-in date." },
-  "hero": { "title": "Suites", "eyebrow": "(Suites)", "subline": "Ten floorplans, from 420 sq ft studios to a 1,350 sq ft penthouse.", "photo": "openLiving" },
+  "seo": {
+    "title": "Suites & Floorplans | Maison Aster Toronto Rentals",
+    "description": "Ten rental floorplans at Maison Aster, from 420 sq ft studios to a 1,350 sq ft three-bedroom penthouse, from $2,050/month. Filter by suite type and price."
+  },
+  "hero": {
+    "title": "Suites",
+    "eyebrow": "(Suites)",
+    "subline": "Ten floorplans, from 420 sq ft studios to a 1,350 sq ft penthouse.",
+    "photo": "openLiving"
+  },
   "summary": "Maison Aster offers 10 floorplans, from 420 sq ft studios to a 1,350 sq ft three-bedroom penthouse, with rents from $2,050 a month.",
-  "floorplans": { "label": "(Floorplans)", "heading": "Find the one that fits. Filter by size, price and move-in date.", "note": "Floorplan drawings are illustrative. Availability updates daily." },
-  "features": { "items": [
-    { "number": "01", "heading": "Built in, not added on", "body": "Quartz counters, integrated appliances, wide-plank oak floors, smart thermostats and keyless entry, in every suite.", "photo": "kitchenWhite", "link": { "label": "Book a tour", "page": "contact" } },
-    { "number": "02", "heading": "Bathrooms worth lingering in", "body": "Frameless glass showers, deep soaker tubs in select suites, heated floors and full-height porcelain tile.", "photo": "bathroom", "link": { "label": "See the gallery", "page": "gallery" } }
-  ] },
-  "slider": { "heading": "Inside the suites", "body": "Daylight, oak and quartz. Swipe through the finishes.", "slides": [
-    { "photo": "bedroomDark", "caption": "Primary bedroom · The Laurel" }, { "photo": "kitchenDark", "caption": "Kitchen · The Juniper" }, { "photo": "readingNook", "caption": "Den · The Elm" }, { "photo": "livingGrey", "caption": "Living room · The Grove" }
-  ] },
-  "faq": { "label": "(FAQ)", "heading": "Good questions." },
-  "cta": { "heading": "A home, well kept. Come see it for yourself." },
-  "next": { "photo": "rooftop", "subtitle": "Eight shared spaces, all included" }
+  "floorplans": {
+    "label": "(Floorplans)",
+    "heading": "Find the one that fits. Filter by suite type and price.",
+    "note": "Floorplan drawings are illustrative. Availability updates daily."
+  },
+  "suiteFeatures": {
+    "label": "(Suite features)",
+    "heading": "Every suite, thoughtfully finished.",
+    "items": [
+      "Spacious bedrooms designed to comfortably fit a queen bed",
+      "Open-concept kitchens with quartz countertops and expansive islands",
+      "Premium stainless steel appliances",
+      "Bathroom mirrors with integrated lighting and soaker tubs",
+      "Double-glazed windows with noise-reducing design",
+      "Luxury wood laminate flooring throughout",
+      "Roller shades on windows for added privacy and light control",
+      "Entry closets with ample storage space and walk-in closets in select suites*",
+      "Spacious, open-concept floorplans that maximize space",
+      "Smart thermostat for personalized temperature control",
+      "Generous balconies and terraces perfect for outdoor living",
+      "In-suite laundry",
+      "Keyless suite entry"
+    ],
+    "footnote": "*Walk-in closets are available in select suites only.",
+    "photo": "kitchenWhite"
+  },
+  "slider": {
+    "heading": "Inside the suites",
+    "body": "Daylight, warm wood tones and quartz. Swipe through the finishes.",
+    "slides": [
+      {
+        "photo": "bedroomDark",
+        "caption": "Primary bedroom · The Laurel"
+      },
+      {
+        "photo": "kitchenDark",
+        "caption": "Kitchen · The Juniper"
+      },
+      {
+        "photo": "readingNook",
+        "caption": "Den · The Elm"
+      },
+      {
+        "photo": "livingGrey",
+        "caption": "Living room · The Grove"
+      }
+    ]
+  },
+  "faq": {
+    "label": "(FAQ)",
+    "heading": "Good questions."
+  },
+  "cta": {
+    "heading": "A home, well kept. Come see it for yourself."
+  },
+  "next": {
+    "photo": "rooftop",
+    "subtitle": "Eight shared spaces, all included"
+  }
 }

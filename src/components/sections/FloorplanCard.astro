@@ -9,17 +9,23 @@ const s = suite.data;
 const avail = s.availability === 'now' ? t(locale, 'suite.available') : s.availability === 'waitlist' ? t(locale, 'suite.waitlist') : formatDate(s.availability, locale, { month: 'short', day: 'numeric' });
 const badge = s.availability === 'now' ? 'bg-secondary text-ink' : s.availability === 'waitlist' ? 'border border-line text-ink-soft' : 'bg-muted text-ink';
 const typeLabel = t(locale, `suite.type.${s.type}` as UiKey);
-const meta = [s.beds === 0 ? t(locale, 'suite.type.studio') : typeLabel.replace(' Penthouse', '').replace('Penthouse ', ''), `${s.baths} ${t(locale, 'suite.bath')}`, `${s.sqft.toLocaleString(locale === 'fr' ? 'fr-CA' : 'en-CA')} ${t(locale, 'suite.sqft')}`];
+const meta = [s.beds === 0 ? t(locale, 'suite.type.studio') : typeLabel.replace(' Penthouse', '').replace('Penthouse ', ''), `${s.baths}\u00a0${t(locale, 'suite.bath')}`, `${s.sqft.toLocaleString(locale === 'fr' ? 'fr-CA' : 'en-CA')}\u00a0${t(locale, 'suite.sqft')}`];
+const priceLabel = `${t(locale, 'suite.from')} ${formatPrice(s.priceFrom, locale)}${t(locale, 'suite.perMonth')}`;
 const movein = s.availability === 'now' ? 'now' : s.availability === 'waitlist' ? 'waitlist' : s.availability;
 ---
-<article class="flex flex-col border border-line bg-surface" data-suite data-type={s.type} data-beds={s.beds} data-price={s.priceFrom} data-movein={movein}>
-  <div class="grid aspect-[4/3] place-items-center border-b border-line p-10">
-    {s.floorplanImage ? <img src={s.floorplanImage} alt={`${s.name} floorplan`} loading="lazy" class="max-h-full" /> : (
-      <svg viewBox="0 0 220 160" class="w-3/5 text-ink" fill="none" stroke="currentColor" stroke-width="2" role="img" aria-label={`${s.name} — ${t(locale, 'suite.floorplan')}`}>
-        <rect x="1" y="1" width="218" height="158" /><path d="M120 1v70M120 100v59M1 90h80M110 90h10M160 71h59M120 71h20" /><path d="M81 90a29 29 0 0 1 29-29" stroke-width="1" /><rect x="140" y="110" width="60" height="30" stroke-width="1" />
-      </svg>
-    )}
-  </div>
+<article class="flex flex-col border border-line bg-surface" data-suite data-type={s.type} data-beds={s.beds} data-price={s.priceFrom} data-movein={movein}
+  data-name={s.name} data-type-label={typeLabel} data-avail-label={avail} data-meta={meta.join('  ·  ')} data-price-label={priceLabel} data-sqft={s.sqft} data-baths={s.baths}>
+  <!-- Floorplan: the whole drawing is a button that opens the larger view (the "Enlarge" pill shows on hover/focus; always on touch screens) -->
+  <button type="button" data-enlarge class="plan-btn group/plan relative grid aspect-[4/3] w-full cursor-zoom-in place-items-center overflow-hidden border-b border-line p-10" aria-label={`${t(locale, 'suite.enlarge')}: ${s.name}`}>
+    <span class="contents" data-plan>
+      {s.floorplanImage ? <img src={s.floorplanImage} alt={`${s.name} floorplan`} loading="lazy" class="max-h-full" /> : (
+        <svg viewBox="0 0 220 160" class="w-3/5 text-ink" fill="none" stroke="currentColor" stroke-width="2" role="img" aria-label={`${s.name} — ${t(locale, 'suite.floorplan')}`}>
+          <rect x="1" y="1" width="218" height="158" /><path d="M120 1v70M120 100v59M1 90h80M110 90h10M160 71h59M120 71h20" /><path d="M81 90a29 29 0 0 1 29-29" stroke-width="1" /><rect x="140" y="110" width="60" height="30" stroke-width="1" />
+        </svg>
+      )}
+    </span>
+    <span class="plan-pill pointer-events-none absolute bottom-5 left-1/2 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm font-semibold text-page" aria-hidden="true"><Icon name="plus" size={14} /> {t(locale, 'suite.enlarge')}</span>
+  </button>
   <div class="flex flex-1 flex-col gap-3 p-6">
     <div class="flex items-center justify-between gap-3">
       <p class="text-label-ext text-accent">{typeLabel}</p>
@@ -27,9 +33,20 @@ const movein = s.availability === 'now' ? 'now' : s.availability === 'waitlist' 
     </div>
     <h3 class="font-serif text-2xl">{s.name}</h3>
     <p class="text-sm text-ink-soft">{meta.join('  ·  ')}</p>
-    <div class="mt-auto flex items-center justify-between pt-3">
-      <p class="font-medium">{t(locale, 'suite.from')} {formatPrice(s.priceFrom, locale)}{t(locale, 'suite.perMonth')}</p>
-      <span class="inline-flex items-center gap-2 text-[0.9375rem] font-semibold">{t(locale, 'suite.floorplan')} <Icon name="arrow-right" /></span>
+    <div class="mt-auto flex items-center justify-between gap-4 pt-3">
+      <p class="font-medium">{priceLabel}</p>
+      <button type="button" data-inquire class="group inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-[0.9375rem] font-semibold transition-colors hover:text-accent">{t(locale, 'suite.inquire')} <Icon name="arrow-right" class="transition-transform duration-200 group-hover:translate-x-0.5" /><span class="sr-only">: {s.name}</span></button>
     </div>
   </div>
 </article>
+
+<style>
+  .plan-btn > [data-plan] > * { transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+  .plan-btn::after { content: ''; position: absolute; inset: 0; background: var(--ma-ink); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+  .plan-pill { opacity: 0; transform: translate(-50%, 8px); transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1; }
+  .plan-btn:hover > [data-plan] > *, .plan-btn:focus-visible > [data-plan] > * { transform: scale(1.04); }
+  .plan-btn:hover::after, .plan-btn:focus-visible::after { opacity: 0.04; }
+  .plan-btn:hover .plan-pill, .plan-btn:focus-visible .plan-pill { opacity: 1; transform: translate(-50%, 0); }
+  .plan-btn:focus-visible { outline: 2px solid var(--ma-ink); outline-offset: -2px; }
+  @media (hover: none) { .plan-pill { opacity: 1; transform: translate(-50%, 0); } }
+</style>

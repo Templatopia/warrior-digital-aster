@@ -5,7 +5,9 @@ import type { PhotoKey } from '../../data/photos';
 interface Props { locale: Locale; photo: PhotoKey; caption?: string; }
 const { locale, photo, caption } = Astro.props;
 ---
-<figure class="relative h-[520px] overflow-hidden md:h-[820px]">
-  <Photo photo={photo} locale={locale} class="h-full w-full" />
+<figure class="relative h-[520px] overflow-hidden md:h-[820px]" data-parallax>
+  <div class="absolute inset-x-0 -top-[12%] h-[124%] will-change-transform" data-parallax-layer>
+    <Photo photo={photo} locale={locale} class="h-full w-full" />
+  </div>
   {caption && <figcaption class="text-label-ext container-site absolute inset-x-0 bottom-10 text-cream drop-shadow md:bottom-12">{caption}</figcaption>}
 </figure>

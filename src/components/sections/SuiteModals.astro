@@ -1,0 +1,153 @@
+---
+/**
+ * Two shared dialogs for the floorplan grid:
+ *  - Floorplan lightbox (opened by a card's "Enlarge" button)
+ *  - Suite inquiry form (opened by a card's "Inquire" button). The suite's details are copied into hidden fields,
+ *    so every submission arrives with the suite name, type, price, size and availability — nothing for the renter to retype.
+ * Netlify Forms by default (see site.json → forms); swap `action`/attributes for HubSpot or a CRM webhook.
+ */
+import site from '../../config/site.json';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { t, pagePath } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const isNetlify = site.forms.provider === 'netlify';
+const FORM = 'suite-inquiry';
+const input = 'w-full rounded-sm border border-line bg-surface px-4 py-3.5 text-base outline-none transition focus:border-ink';
+const label = 'mb-2 block text-sm font-medium';
+const dialog = 'suite-modal m-auto max-h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] overflow-y-auto overscroll-contain bg-surface p-0 text-ink backdrop:bg-transparent';
+const closeBtn = 'absolute top-4 right-4 z-10 grid size-12 place-items-center rounded-full bg-muted transition-colors hover:bg-line md:top-6 md:right-6';
+---
+<!-- Floorplan lightbox -->
+<dialog class:list={[dialog, 'max-w-5xl']} data-plan-modal aria-labelledby="plan-modal-title">
+  <button type="button" class={closeBtn} data-modal-close aria-label={t(locale, 'nav.close')}><Icon name="close" size={20} /></button>
+  <div class="grid gap-8 p-6 pt-20 md:grid-cols-[1fr_280px] md:gap-12 md:p-12 md:pt-12">
+    <div class="grid aspect-[4/3] place-items-center border border-line p-6 md:p-12 [&>img]:max-h-full [&>svg]:w-4/5" data-plan-slot></div>
+    <div class="flex flex-col gap-4 md:pt-16" data-modal-body>
+      <p class="text-label-ext text-accent" data-f="typeLabel"></p>
+      <h2 id="plan-modal-title" class="text-feature" data-f="name"></h2>
+      <p class="text-ink-soft" data-f="meta"></p>
+      <p class="font-medium" data-f="priceLabel"></p>
+      <p class="font-serif text-lg italic" data-f="availLabel"></p>
+      <div class="mt-4"><Button type="button" data-plan-inquire>{t(locale, 'suite.inquire')}</Button></div>
+    </div>
+  </div>
+</dialog>
+
+<!-- Suite inquiry form -->
+<dialog class:list={[dialog, 'max-w-3xl']} data-inquiry-modal aria-labelledby="inquiry-modal-title">
+  <button type="button" class={closeBtn} data-modal-close aria-label={t(locale, 'nav.close')}><Icon name="close" size={20} /></button>
+  <div class="p-6 pt-20 md:p-16" data-modal-body>
+    <p class="text-label-ext mb-4 text-accent" data-f="typeLabel"></p>
+    <h2 id="inquiry-modal-title" class="text-feature pr-12" data-f="name"></h2>
+    <p class="mt-4 text-lg"><span data-f="meta"></span> <span class="text-ink-soft">·</span> <span data-f="priceLabel"></span> <span class="text-ink-soft">·</span> <em class="font-serif" data-f="availLabel"></em></p>
+    <p class="mt-3 max-w-xl text-ink-soft">{t(locale, 'inquiry.intro')}</p>
+
+    <form name={FORM} method="POST" action={pagePath(locale, 'thanks')} data-netlify={isNetlify ? 'true' : undefined} netlify-honeypot="company" data-netlify-recaptcha={isNetlify ? 'true' : undefined} class="mt-8 grid gap-5 sm:grid-cols-2">
+      <input type="hidden" name="form-name" value={FORM} />
+      <input type="hidden" name="language" value={locale} />
+      <!-- Filled in from the card that was clicked -->
+      <input type="hidden" name="subject" value="" data-subject data-remove-prefix />
+      <input type="hidden" name="suite" value="" data-h="name" />
+      <input type="hidden" name="suite_type" value="" data-h="typeLabel" />
+      <input type="hidden" name="suite_price" value="" data-h="priceLabel" />
+      <input type="hidden" name="suite_size_sqft" value="" data-h="sqft" />
+      <input type="hidden" name="suite_baths" value="" data-h="baths" />
+      <input type="hidden" name="suite_availability" value="" data-h="availLabel" />
+      <input type="hidden" name="page" value="" data-page />
+      <p class="hidden"><label>Company <input name="company" tabindex="-1" autocomplete="off" /></label></p>
+
+      <div class="sm:col-span-2"><label class={label} for="q-name">{t(locale, 'inquiry.fullName')}</label><input id="q-name" name="full_name" required autocomplete="name" class={input} /></div>
+      <div><label class={label} for="q-email">{t(locale, 'form.email')}</label><input id="q-email" name="email" type="email" required autocomplete="email" class={input} /></div>
+      <div><label class={label} for="q-phone">{t(locale, 'form.phone')}</label><input id="q-phone" name="phone" type="tel" autocomplete="tel" class={input} /></div>
+      <div class="sm:col-span-2"><label class={label} for="q-movein">{t(locale, 'inquiry.moveIn')}</label><input id="q-movein" name="move_in_date" type="date" class={input} data-min-today /></div>
+      <div class="sm:col-span-2"><label class={label} for="q-msg">{t(locale, 'inquiry.comments')}</label><textarea id="q-msg" name="comments" rows="4" class={input}></textarea></div>
+      {isNetlify && <div class="sm:col-span-2" data-netlify-recaptcha="true"></div>}
+      <div class="sm:col-span-2"><Button type="submit" class="max-sm:w-full">{t(locale, 'inquiry.submit')}</Button></div>
+    </form>
+  </div>
+</dialog>
+
+<style is:global>
+  html.modal-open { overflow: hidden; }
+  .suite-modal::backdrop { background: rgb(20 20 18 / 0.72); }
+  .suite-modal[open]::backdrop { animation: suite-backdrop-in 0.35s ease-out; }
+  @keyframes suite-backdrop-in { from { opacity: 0; } }
+</style>
+
+<script>
+  const subjectPrefix = document.querySelector<HTMLElement>('[data-inquiry-modal]')?.closest<HTMLElement>('[data-floorplans]')?.dataset.subject ?? 'Suite inquiry';
+  const planModal = document.querySelector<HTMLDialogElement>('[data-plan-modal]')!;
+  const inquiryModal = document.querySelector<HTMLDialogElement>('[data-inquiry-modal]')!;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
+  const canAnimate = () => !reduce.matches && typeof planModal.animate === 'function';
+  let opener: HTMLElement | null = null;
+
+  const fill = (dlg: HTMLDialogElement, card: HTMLElement) => {
+    dlg.querySelectorAll<HTMLElement>('[data-f]').forEach((el) => (el.textContent = card.dataset[el.dataset.f!] ?? ''));
+    dlg.querySelectorAll<HTMLInputElement>('[data-h]').forEach((el) => (el.value = card.dataset[el.dataset.h!] ?? ''));
+  };
+
+  const open = (dlg: HTMLDialogElement) => {
+    document.documentElement.classList.add('modal-open');
+    dlg.showModal();
+    dlg.scrollTop = 0;
+    if (!canAnimate()) return;
+    dlg.animate([{ opacity: 0, transform: 'translateY(24px) scale(0.98)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: EASE });
+    dlg.querySelector('[data-modal-body]')?.animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 600, delay: 120, easing: EASE, fill: 'backwards' });
+  };
+  const close = (dlg: HTMLDialogElement, then?: () => void) => {
+    if (!dlg.open) return then?.();
+    const done = () => {
+      dlg.close();
+      if (!then) { document.documentElement.classList.remove('modal-open'); opener?.focus({ preventScroll: true }); }
+      then?.();
+    };
+    if (!canAnimate()) return done();
+    dlg.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(16px) scale(0.98)' }], { duration: 250, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' })
+      .finished.then(() => { done(); dlg.getAnimations().forEach((a) => a.cancel()); }).catch(done);
+  };
+
+  const openPlan = (card: HTMLElement) => {
+    fill(planModal, card);
+    const slot = planModal.querySelector('[data-plan-slot]')!;
+    const art = card.querySelector('[data-plan] > *')?.cloneNode(true) as Element | undefined;
+    slot.replaceChildren(...(art ? [art] : []));
+    art?.removeAttribute('class');
+    planModal.dataset.card = card.dataset.name;
+    open(planModal);
+  };
+  const openInquiry = (card: HTMLElement) => {
+    fill(inquiryModal, card);
+    inquiryModal.querySelector<HTMLInputElement>('[data-subject]')!.value = `${subjectPrefix}: ${card.dataset.name} (${card.dataset.typeLabel})`;
+    inquiryModal.querySelector<HTMLInputElement>('[data-page]')!.value = location.href;
+    const date = inquiryModal.querySelector<HTMLInputElement>('[data-min-today]');
+    if (date) date.min = new Date().toISOString().slice(0, 10);
+    open(inquiryModal);
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-suite]').forEach((card) => {
+    card.querySelector('[data-enlarge]')?.addEventListener('click', (e) => { opener = e.currentTarget as HTMLElement; openPlan(card); });
+    card.querySelector('[data-inquire]')?.addEventListener('click', (e) => { opener = e.currentTarget as HTMLElement; openInquiry(card); });
+  });
+
+  // "Inquire" from inside the floorplan lightbox: swap straight to the form for the same suite
+  planModal.querySelector('[data-plan-inquire]')?.addEventListener('click', () => {
+    const card = [...document.querySelectorAll<HTMLElement>('[data-suite]')].find((c) => c.dataset.name === planModal.dataset.card);
+    if (card) close(planModal, () => openInquiry(card));
+  });
+
+  [planModal, inquiryModal].forEach((dlg) => {
+    dlg.querySelector('[data-modal-close]')?.addEventListener('click', () => close(dlg));
+    dlg.addEventListener('cancel', (e) => { e.preventDefault(); close(dlg); }); // Esc key
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) close(dlg); }); // click on the backdrop
+  });
+  window.addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    [planModal, inquiryModal].forEach((d) => d.open && d.close());
+    document.documentElement.classList.remove('modal-open');
+  });
+</script>

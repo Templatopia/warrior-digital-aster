@@ -25,7 +25,7 @@ const a = site.address;
       <dl class="grid gap-8 sm:grid-cols-3">
         <div><dt class="text-label-ext mb-2 opacity-60">{t(locale, 'footer.office')}</dt><dd><address class="not-italic">{a.street}<br />{a.city}, {a.region} {a.postalCode}</address></dd></div>
         <div><dt class="text-label-ext mb-2 opacity-60">{locale === 'fr' ? 'Heures' : 'Hours'}</dt><dd>{site.hours.map((h) => <span class="block">{l(h.label, locale)} {h.opens}–{h.closes}</span>)}</dd></div>
-        <div><dt class="text-label-ext mb-2 opacity-60">{locale === 'fr' ? 'Téléphone ou courriel' : 'Call or email'}</dt><dd><a href={`tel:${site.phoneHref}`} class="block hover:underline">{site.phone}</a><a href={`mailto:${site.email}`} class="block break-all hover:underline">{site.email}</a></dd></div>
+        <div><dt class="text-label-ext mb-2 opacity-60">{locale === 'fr' ? 'Téléphone ou courriel' : 'Call or email'}</dt><dd><a href={`tel:${site.phoneHref}`} class="link-line block w-fit">{site.phone}</a><a href={`mailto:${site.email}`} class="link-line block w-fit break-all">{site.email}</a></dd></div>
       </dl>
     </div>
     <div class="relative h-[320px] lg:h-auto">

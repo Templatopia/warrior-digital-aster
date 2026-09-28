@@ -1,0 +1,34 @@
+---
+/** Suite features: editorial heading + numbered two-column list. Copy lives in src/content/pages/{en,fr}/suites.json → suiteFeatures. */
+import SectionHead from './SectionHead.astro';
+import Photo from '../ui/Photo.astro';
+import type { Locale } from '../../i18n/ui';
+import type { PhotoKey } from '../../data/photos';
+interface Props { locale: Locale; label: string; heading: string; items: string[]; footnote?: string; photo?: PhotoKey; muted?: boolean; }
+const { locale, label, heading, items = [], footnote, photo, muted = true } = Astro.props;
+---
+<section class:list={['py-24 md:py-40', muted && 'bg-muted']}>
+  <div class="container-site">
+    <SectionHead label={label} heading={heading} />
+    <div class="mt-14 md:mt-20 md:grid md:grid-cols-[1fr_minmax(0,62%)] md:gap-10">
+      {photo ? (
+        <div class="mb-10 md:sticky md:top-32 md:mb-0 md:self-start md:pr-6 lg:pr-12" data-reveal>
+          <figure class="aspect-[4/3] overflow-hidden md:aspect-[4/5]">
+            <Photo photo={photo} locale={locale} sizes="(min-width: 768px) 35vw, 100vw" class="h-full w-full" />
+          </figure>
+        </div>
+      ) : <div class="hidden md:block" aria-hidden="true"></div>}
+      <div>
+        <ul class="grid border-t border-line-strong sm:grid-cols-2 sm:gap-x-12" data-reveal>
+          {items.map((item, i) => (
+            <li class="flex gap-5 border-b border-line py-5 md:py-6">
+              <span class="text-label-ext w-7 shrink-0 pt-1 text-accent tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+              <span class="text-lg leading-snug">{item}</span>
+            </li>
+          ))}
+        </ul>
+        {footnote && <p class="mt-6 text-sm text-ink-soft">{footnote}</p>}
+      </div>
+    </div>
+  </div>
+</section>

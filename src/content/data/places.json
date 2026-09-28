@@ -1,10 +1,10 @@
 [
-  { "id": "little-aster", "order": 1, "category": "coffee", "name": "Little Aster Coffee", "walkMinutes": 1 },
-  { "id": "commons-market", "order": 2, "category": "groceries", "name": "Commons Market", "walkMinutes": 3 },
-  { "id": "millbrook-station", "order": 3, "category": "transit", "name": "Millbrook Station", "walkMinutes": 4 },
-  { "id": "osteria-verde", "order": 4, "category": "dining", "name": "Osteria Verde", "walkMinutes": 5 },
-  { "id": "ravine-park", "order": 5, "category": "parks", "name": "Millbrook Ravine Park", "walkMinutes": 6 },
-  { "id": "public-school", "order": 6, "category": "schools", "name": "Millbrook Public School", "walkMinutes": 7 },
-  { "id": "climbing", "order": 7, "category": "fitness", "name": "Commons Climbing Co.", "walkMinutes": 8 },
-  { "id": "foundry", "order": 8, "category": "culture", "name": "The Foundry Arts Centre", "walkMinutes": 10 }
+  {"id": "little-aster", "order": 1, "category": "coffee", "name": "Little Aster Coffee", "walkMinutes": 1, "lat": 43.64312, "lng": -79.3865},
+  {"id": "commons-market", "order": 2, "category": "groceries", "name": "Commons Market", "walkMinutes": 3, "lat": 43.6407, "lng": -79.38806},
+  {"id": "millbrook-station", "order": 3, "category": "transit", "name": "Millbrook Station", "walkMinutes": 4, "lat": 43.64525, "lng": -79.38775},
+  {"id": "osteria-verde", "order": 4, "category": "dining", "name": "Osteria Verde", "walkMinutes": 5, "lat": 43.64092, "lng": -79.38307},
+  {"id": "ravine-park", "order": 5, "category": "parks", "name": "Millbrook Ravine Park", "walkMinutes": 6, "lat": 43.64028, "lng": -79.39168},
+  {"id": "public-school", "order": 6, "category": "schools", "name": "Millbrook Public School", "walkMinutes": 7, "lat": 43.64342, "lng": -79.38068},
+  {"id": "climbing", "order": 7, "category": "fitness", "name": "Commons Climbing Co.", "walkMinutes": 8, "lat": 43.64529, "lng": -79.39355},
+  {"id": "foundry", "order": 8, "category": "culture", "name": "The Foundry Arts Centre", "walkMinutes": 10, "lat": 43.64843, "lng": -79.38244}
 ]

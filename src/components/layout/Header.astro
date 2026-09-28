@@ -16,39 +16,38 @@ const current = Astro.url.pathname;
 const isCurrent = (p: string) => current.startsWith(pagePath(locale, p as any));
 ---
 <header id="site-header" data-overlay={overlay ? '' : undefined} class="fixed inset-x-0 top-0 z-50 transition-[background-color,color,box-shadow] duration-300">
-  <div class="container-site flex h-16 items-center justify-between md:h-24">
-    <nav aria-label={t(locale, 'nav.primary')} class="hidden flex-1 lg:block">
-      <ul class="flex gap-8 text-[0.9375rem] font-medium">
-        {left.map((p) => <li><a href={pagePath(locale, p)} aria-current={isCurrent(p) ? 'page' : undefined} class="underline-offset-8 hover:underline aria-[current]:underline">{t(locale, `nav.${p}`)}</a></li>)}
-      </ul>
-    </nav>
-    <a href={pagePath(locale, 'home')} class="shrink-0" aria-label={`${site.name} — ${t(locale, 'nav.home')}`}><Logo /></a>
-    <div class="hidden flex-1 items-center justify-end gap-8 text-[0.9375rem] font-medium lg:flex">
-      {right.map((p) => <a href={pagePath(locale, p)} aria-current={isCurrent(p) ? 'page' : undefined} class="underline-offset-8 hover:underline aria-[current]:underline">{t(locale, `nav.${p}`)}</a>)}
-      <a href={altHref} hreflang={other} lang={other} class="opacity-80 hover:opacity-100">{t(locale, 'lang.short')}</a>
+  <div class="flex h-16 w-full items-center justify-between gap-10 px-4 md:h-24 md:px-10">
+    <a href={pagePath(locale, 'home')} class="shrink-0 whitespace-nowrap" aria-label={`${site.name} — ${t(locale, 'nav.home')}`}><Logo /></a>
+    <div class="hidden items-center gap-8 whitespace-nowrap text-sm font-medium xl:flex nav:gap-10 nav:text-[0.9375rem]">
+      <nav aria-label={t(locale, 'nav.primary')}>
+        <ul class="flex gap-5 nav:gap-7">
+          {[...left, ...right].map((p) => <li><a href={pagePath(locale, p)} aria-current={isCurrent(p) ? 'page' : undefined} class="link-line pb-1">{t(locale, `nav.${p}`)}</a></li>)}
+        </ul>
+      </nav>
+      <a href={altHref} hreflang={other} lang={other} data-vt-label={site.name} data-vt-sub={t(locale, 'lang.switch')} class="opacity-80 hover:opacity-100">{t(locale, 'lang.short')}</a>
       <Button href={pagePath(locale, 'contact')} size="sm">{t(locale, 'cta.bookTour')}</Button>
     </div>
-    <button type="button" data-menu-open class="flex items-center gap-2 text-[0.9375rem] font-medium lg:hidden" aria-haspopup="dialog" aria-controls="mobile-menu">
+    <button type="button" data-menu-open class="flex items-center gap-2 text-[0.9375rem] font-medium xl:hidden" aria-haspopup="dialog" aria-controls="mobile-menu">
       {t(locale, 'nav.menu')} <Icon name="menu" size={20} />
     </button>
   </div>
 </header>
 
 <dialog id="mobile-menu" class="m-0 h-dvh max-h-none w-screen max-w-none bg-inverse p-0 text-cream backdrop:bg-transparent open:flex open:flex-col" aria-label={t(locale, 'nav.menu')}>
-  <div class="container-site flex h-16 items-center justify-between">
+  <div class="container-site flex h-16 items-center justify-between" data-menu-item>
     <Logo />
     <button type="button" data-menu-close class="flex items-center gap-2 text-[0.9375rem] font-medium">{t(locale, 'nav.close')} <Icon name="close" size={20} /></button>
   </div>
   <nav class="container-site flex-1 overflow-y-auto pt-8" aria-label={t(locale, 'nav.primary')}>
     <ul class="space-y-1">
-      {[...left, ...right].map((p) => <li><a href={pagePath(locale, p)} class="text-feature block py-1.5">{t(locale, `nav.${p}`)}</a></li>)}
+      {[...left, ...right].map((p) => <li data-menu-item><a href={pagePath(locale, p)} class="text-feature block py-1.5">{t(locale, `nav.${p}`)}</a></li>)}
     </ul>
   </nav>
-  <div class="container-site space-y-5 pb-8">
+  <div class="container-site space-y-5 pb-8" data-menu-item>
     <Button href={pagePath(locale, 'contact')} class="w-full">{t(locale, 'cta.bookTour')}</Button>
     <div class="flex items-center justify-between text-sm opacity-80">
       <a href={`tel:${site.phoneHref}`}>{site.phone}</a>
-      <a href={altHref} hreflang={other} lang={other}>{t(locale, 'lang.switch')}</a>
+      <a href={altHref} hreflang={other} lang={other} data-vt-label={site.name} data-vt-sub={t(locale, 'lang.switch')}>{t(locale, 'lang.switch')}</a>
     </div>
   </div>
 </dialog>
@@ -58,10 +57,45 @@ const isCurrent = (p: string) => current.startsWith(pagePath(locale, p as any));
   const onScroll = () => header.toggleAttribute('data-scrolled', window.scrollY > 40);
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+  // Mobile menu: fades in, then its items slide in from the right; reverses on close.
+  // Menu links that change page are animated out by PageTransition.astro.
   const menu = document.getElementById('mobile-menu') as HTMLDialogElement;
-  document.querySelector('[data-menu-open]')?.addEventListener('click', () => menu.showModal());
-  document.querySelector('[data-menu-close]')?.addEventListener('click', () => menu.close());
-  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.close()));
+  const items = [...menu.querySelectorAll<HTMLElement>('[data-menu-item]')];
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const canAnimate = () => !reduce.matches && typeof menu.animate === 'function';
+  const EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
+  let closing = false;
+  const stop = () => [menu, ...items].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));
+  const openMenu = () => {
+    closing = false;
+    stop();
+    menu.showModal();
+    if (!canAnimate()) return;
+    menu.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, easing: 'ease-out' });
+    items.forEach((el, i) => el.animate(
+      [{ opacity: 0, transform: 'translateX(48px)' }, { opacity: 1, transform: 'none' }],
+      { duration: 700, delay: 100 + i * 55, easing: EASE, fill: 'backwards' },
+    ));
+  };
+  const closeMenu = () => {
+    if (!menu.open || closing) return;
+    if (!canAnimate()) { menu.close(); return; }
+    closing = true;
+    stop();
+    items.forEach((el, i) => el.animate(
+      [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(32px)' }],
+      { duration: 260, delay: (items.length - 1 - i) * 20, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' },
+    ));
+    menu.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, delay: 180, easing: 'ease-in', fill: 'forwards' })
+      .finished.then(() => { if (closing) { menu.close(); stop(); closing = false; } }).catch(() => {});
+  };
+  document.querySelector('[data-menu-open]')?.addEventListener('click', openMenu);
+  document.querySelector('[data-menu-close]')?.addEventListener('click', closeMenu);
+  menu.addEventListener('cancel', (e) => { e.preventDefault(); closeMenu(); }); // Esc key
+  // Links that don't change page with a transition (phone number, etc.): just close the menu.
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', (e) => setTimeout(() => { if (!e.defaultPrevented) closeMenu(); })));
+  // Back/forward cache: never come back to a half-animated menu.
+  window.addEventListener('pageshow', (e) => { if (e.persisted) { closing = false; stop(); if (menu.open) menu.close(); } });
 </script>
 
 <style>

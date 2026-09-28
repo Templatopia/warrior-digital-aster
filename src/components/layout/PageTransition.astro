@@ -7,15 +7,32 @@
 ---
 <div class="vt-curtain" aria-hidden="true">
   <span class="vt-curtain__line"></span>
-  <span class="vt-curtain__label text-title" data-vt-curtain-label></span>
+  <span class="vt-curtain__text">
+    <span class="vt-curtain__label text-title" data-vt-curtain-label></span>
+    <span class="vt-curtain__sub" data-vt-curtain-sub></span>
+  </span>
 </div>
 <script is:inline>
   // Runs as soon as the curtain is parsed, before first paint: show the label of the page we are arriving on.
   try {
     if (document.documentElement.classList.contains('vt-arrive')) {
-      var l = sessionStorage.getItem('vt-label');
+      var back = document.documentElement.hasAttribute('data-vt-back');
+      // Back/forward: show this page's own name; otherwise the label the clicked link stored
+      var l = back ? document.documentElement.getAttribute('data-vt-page') : sessionStorage.getItem('vt-label');
+      var sub = back ? '' : sessionStorage.getItem('vt-sub');
       if (l) document.querySelector('[data-vt-curtain-label]').textContent = l;
+      if (sub) {
+        var subEl = document.querySelector('[data-vt-curtain-sub]');
+        subEl.textContent = sub;
+        // Safety net for slow devices: never show the line in a fallback font; reveal it once the serif is ready.
+        var f = '1em ' + getComputedStyle(subEl).fontFamily;
+        if (document.fonts && !document.fonts.check(f, sub)) {
+          subEl.style.opacity = '0';
+          document.fonts.load(f, sub).then(function () { subEl.style.opacity = ''; }, function () { subEl.style.opacity = ''; });
+        }
+      }
       sessionStorage.removeItem('vt-label');
+      sessionStorage.removeItem('vt-sub');
     }
   } catch (e) {}
 </script>
@@ -25,14 +42,13 @@
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const curtain = document.querySelector<HTMLElement>('.vt-curtain');
   const label = document.querySelector<HTMLElement>('[data-vt-curtain-label]');
-  const LEAVE_MS = 1000;
+  const subLabel = document.querySelector<HTMLElement>('[data-vt-curtain-sub]');
+  const LEAVE_MS = 750;
 
   // Arrive: tidy up once the curtain has gone (plus a fallback in case animations never fire).
   const endArrive = () => root.classList.remove('vt-arrive', 'vt-reveal');
-  if (root.classList.contains('vt-arrive')) {
-    curtain?.addEventListener('animationend', (e) => { if (e.target === curtain) endArrive(); });
-    window.setTimeout(endArrive, 4000);
-  }
+  curtain?.addEventListener('animationend', (e) => { if (e.target === curtain && root.classList.contains('vt-reveal')) endArrive(); });
+  if (root.classList.contains('vt-arrive')) window.setTimeout(endArrive, 4000);
 
   const eligible = (a: HTMLAnchorElement, e: MouseEvent) => {
     if (reduce.matches || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
@@ -58,36 +74,68 @@
     leaving = true;
     const href = a.href;
     const text = labelFor(a);
+    const sub = a.dataset.vtSub || ''; // e.g. language switch: "Français" under the property name
     if (label) label.textContent = text;
+    if (subLabel) subLabel.textContent = sub;
 
     let done = false;
     const go = () => {
       if (done) return;
       done = true;
-      try { sessionStorage.setItem('vt', '1'); sessionStorage.setItem('vt-label', text); } catch {}
+      try { sessionStorage.setItem('vt', '1'); sessionStorage.setItem('vt-label', text); sessionStorage.setItem('vt-sub', sub); } catch {}
       window.location.href = href;
     };
 
     root.classList.remove('vt-arrive', 'vt-reveal');
-    // Links inside the full-screen mobile menu: it is already the curtain colour, so cover instantly
-    // (same task as the menu closing, so no frame of the page underneath is ever painted).
-    const dialog = a.closest('dialog');
+    // Links inside the full-screen mobile menu: the menu items drift out to the left (the clicked one last),
+    // then the curtain (same colour as the menu) takes over instantly underneath and the page name floats in.
+    const dialog = a.closest<HTMLDialogElement>('#mobile-menu');
     if (dialog) {
-      root.classList.add('vt-instant', 'vt-leaving');
-      if (dialog.open) dialog.close();
-      window.setTimeout(go, 60);
+      const clicked = a.closest('[data-menu-item]');
+      const parts = [...dialog.querySelectorAll<HTMLElement>('[data-menu-item]')].filter((el) => el !== clicked);
+      if (clicked) parts.push(clicked as HTMLElement);
+      parts.forEach((el) => el.getAnimations().forEach((x) => x.cancel()));
+      const outs = parts.map((el, i) => typeof el.animate !== 'function' ? Promise.resolve() : el.animate(
+        [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(-40px)' }],
+        { duration: 320, delay: i * 30, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' },
+      ).finished.catch(() => {}));
+      let covered = false;
+      const cover = () => {
+        if (covered) return;
+        covered = true;
+        root.classList.add('vt-instant', 'vt-leaving');
+        if (dialog.open) dialog.close();
+        window.setTimeout(go, 650);
+      };
+      Promise.all(outs).then(cover);
+      window.setTimeout(cover, 800);
       return;
     }
     // Two frames so the starting position is committed before the transition begins.
     requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('vt-leaving')));
-    curtain?.addEventListener('transitionend', (ev) => { if (ev.target === curtain && ev.propertyName === 'transform') go(); });
-    window.setTimeout(go, LEAVE_MS + 150);
+    // Change page once the curtain has landed AND its text has finished settling, so the new page (which paints
+    // the text at rest) picks up exactly where this one left off.
+    const waiting = new Set<EventTarget>([curtain!, label!, ...(sub ? [subLabel!] : [])].filter(Boolean));
+    const done1 = (t: EventTarget) => { waiting.delete(t); if (!waiting.size) go(); };
+    curtain?.addEventListener('transitionend', (ev) => { if (ev.target === curtain && ev.propertyName === 'transform') done1(curtain); });
+    label?.addEventListener('animationend', (ev) => { if (ev.target === label) done1(label); }, { once: true });
+    subLabel?.addEventListener('animationend', (ev) => { if (ev.target === subLabel) done1(subLabel); }, { once: true });
+    window.setTimeout(go, LEAVE_MS + 400);
   });
 
   // Back/forward cache: the page comes back exactly as we left it (curtain down), so reset it.
+  // Back/forward cache: the page comes back exactly as we left it (usually with the curtain down).
+  // Turn that straight into an arrival: relabel the curtain with this page's name and lift it off.
   window.addEventListener('pageshow', (e) => {
     if (!e.persisted) return;
     leaving = false;
     root.classList.remove('vt-leaving', 'vt-instant', 'vt-arrive', 'vt-reveal');
+    if (reduce.matches) return;
+    if (label) label.textContent = root.dataset.vtPage || '';
+    if (subLabel) subLabel.textContent = '';
+    void root.offsetWidth; // restart the arrival animations
+    root.classList.add('vt-arrive');
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('vt-reveal')));
+    window.setTimeout(endArrive, 4000);
   });
 </script>

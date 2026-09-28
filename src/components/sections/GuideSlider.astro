@@ -1,0 +1,130 @@
+---
+/**
+ * Local guide slider: one category per slide (image left; headline, subheadline and a short list right).
+ * Swipeable on touch (native scroll-snap), with category tabs, arrows and keyboard support.
+ * Copy lives in src/content/pages/{en,fr}/neighbourhood.json → guide.
+ */
+import Photo from '../ui/Photo.astro';
+import Icon from '../ui/Icon.astro';
+import { t } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+import type { PhotoKey } from '../../data/photos';
+interface Item { name: string; detail?: string; time?: string; }
+interface Slide { tab: string; photo: PhotoKey; heading: string; subheading?: string; items: Item[]; }
+interface Props { locale: Locale; label: string; slides?: Slide[]; muted?: boolean; }
+const { locale, label, slides = [], muted = true } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+{slides.length > 0 && (
+<section class:list={['py-24 md:py-32', muted && 'bg-muted']} data-guide>
+  <div class="container-site">
+    <div class="mb-10 flex flex-col gap-6 md:mb-14 md:flex-row md:items-end md:justify-between">
+      <h2 class="text-paren text-ink-soft">{label}</h2>
+      <div class="no-scrollbar -mx-4 flex gap-6 overflow-x-auto px-4 md:mx-0 md:gap-8 md:px-0" role="tablist" aria-label={label}>
+        {slides.map((s, i) => (
+          <button type="button" role="tab" data-tab={i} aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`guide-slide-${i}`} class="guide-tab shrink-0 pb-1.5 text-[0.9375rem] font-medium">{s.tab}</button>
+        ))}
+      </div>
+    </div>
+
+    <div class="no-scrollbar flex snap-x snap-mandatory gap-10 overflow-x-auto scroll-smooth" data-track tabindex="0" aria-label={label}>
+      {slides.map((s, i) => (
+        <article id={`guide-slide-${i}`} role="tabpanel" class="guide-slide grid w-full shrink-0 snap-start gap-8 md:grid-cols-2 md:items-center md:gap-14 lg:gap-24" data-slide aria-label={`${i + 1} / ${slides.length}: ${s.tab}`}>
+          <figure class="aspect-[4/3] overflow-hidden md:aspect-[4/5]">
+            <Photo photo={s.photo} locale={locale} sizes="(min-width: 768px) 45vw, 100vw" class="guide-img h-full w-full" />
+          </figure>
+          <div class="guide-copy max-w-[520px]">
+            <p class="text-label-ext text-accent">{pad(i + 1)} / {s.tab}</p>
+            <h3 class="text-feature mt-5">{s.heading}</h3>
+            {s.subheading && <p class="text-body-l mt-4 text-ink-soft">{s.subheading}</p>}
+            <ul class="mt-8 border-t border-line-strong">
+              {s.items.map((it) => (
+                <li class="grid grid-cols-[1fr_auto] items-baseline gap-x-6 gap-y-1 border-b border-line py-4">
+                  <span class="text-lg font-medium">{it.name}</span>
+                  {it.time && <span class="text-sm whitespace-nowrap text-accent tabular-nums">{it.time}</span>}
+                  {it.detail && <span class="col-span-2 text-sm text-ink-soft">{it.detail}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="mt-10 flex items-center justify-between md:justify-end md:gap-8">
+      <div class="flex items-center gap-6">
+        <p class="text-label-ext" aria-live="polite"><span data-current>01</span> / {pad(slides.length)}</p>
+        <span class="relative block h-px w-32 bg-line-strong md:w-48"><span class="absolute inset-y-0 left-0 bg-ink transition-[width] duration-500" style={`width:${100 / slides.length}%`} data-bar></span></span>
+      </div>
+      <div class="flex gap-2">
+        <button type="button" class="grid size-12 place-items-center border border-line-strong transition-colors hover:bg-ink hover:text-page disabled:pointer-events-none disabled:opacity-30" data-prev aria-label={t(locale, 'slider.prev')}><Icon name="arrow-left" /></button>
+        <button type="button" class="grid size-12 place-items-center border border-line-strong transition-colors hover:bg-ink hover:text-page disabled:pointer-events-none disabled:opacity-30" data-next aria-label={t(locale, 'slider.next')}><Icon name="arrow-right" /></button>
+      </div>
+    </div>
+  </div>
+</section>
+)}
+
+<style is:global>
+  .guide-tab { position: relative; color: var(--ma-ink-soft); transition: color 0.3s ease; }
+  .guide-tab::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+  .guide-tab:hover, .guide-tab[aria-selected='true'] { color: var(--ma-ink); }
+  .guide-tab[aria-selected='true']::after { transform: scaleX(1); }
+  /* The current slide's text settles in; neighbouring slides sit slightly faded while swiping */
+  .js .guide-copy > * { transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .js .guide-slide:not(.is-current) .guide-copy > * { opacity: 0; transform: translateY(16px); }
+  .js .guide-slide.is-current .guide-copy > :nth-child(2) { transition-delay: 0.06s; }
+  .js .guide-slide.is-current .guide-copy > :nth-child(3) { transition-delay: 0.12s; }
+  .js .guide-slide.is-current .guide-copy > :nth-child(4) { transition-delay: 0.18s; }
+  .guide-img { transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+  .js .guide-slide:not(.is-current) .guide-img { transform: scale(1.06); }
+  @media (prefers-reduced-motion: reduce) { .js .guide-copy > *, .guide-img { transition: none; } .js .guide-slide:not(.is-current) .guide-copy > * { opacity: 1; transform: none; } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-guide]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const current = root.querySelector('[data-current]')!;
+    const bar = root.querySelector<HTMLElement>('[data-bar]')!;
+    const prev = root.querySelector<HTMLButtonElement>('[data-prev]')!;
+    const next = root.querySelector<HTMLButtonElement>('[data-next]')!;
+    let index = -1;
+
+    const setIndex = (i: number) => {
+      if (i === index) return;
+      index = i;
+      slides.forEach((s, k) => { s.classList.toggle('is-current', k === i); s.toggleAttribute('inert', k !== i); });
+      tabs.forEach((tb, k) => tb.setAttribute('aria-selected', String(k === i)));
+      // keep the active tab visible in the (horizontally scrolling) tab bar on phones, without moving the page
+      const bar2 = tabs[i]?.parentElement;
+      if (bar2 && tabs[i]) { const tb = tabs[i]; if (tb.offsetLeft < bar2.scrollLeft || tb.offsetLeft + tb.offsetWidth > bar2.scrollLeft + bar2.clientWidth) bar2.scrollTo({ left: tb.offsetLeft - 16, behavior: 'smooth' }); }
+      current.textContent = String(i + 1).padStart(2, '0');
+      bar.style.width = `${((i + 1) / slides.length) * 100}%`;
+      prev.disabled = i === 0;
+      next.disabled = i === slides.length - 1;
+    };
+    const goTo = (i: number) => {
+      const k = Math.max(0, Math.min(slides.length - 1, i));
+      track.scrollTo({ left: slides[k].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+      setIndex(k);
+    };
+    // Which slide is showing (works for swipes, trackpads and button clicks alike)
+    const onScroll = () => {
+      const w = track.clientWidth;
+      const k = Math.round(track.scrollLeft / (slides[1] ? slides[1].offsetLeft - slides[0].offsetLeft : w));
+      setIndex(Math.max(0, Math.min(slides.length - 1, k)));
+    };
+    let raf = 0;
+    track.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(onScroll); }, { passive: true });
+    prev.addEventListener('click', () => goTo(index - 1));
+    next.addEventListener('click', () => goTo(index + 1));
+    tabs.forEach((tb, k) => tb.addEventListener('click', () => goTo(k)));
+    track.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); goTo(index + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(index - 1); }
+    });
+    setIndex(0);
+  });
+</script>

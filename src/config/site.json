@@ -1,14 +1,23 @@
 {
   "name": "Maison Aster",
   "url": "https://maison-aster.netlify.app",
-  "locales": ["en", "fr"],
+  "locales": [
+    "en",
+    "fr"
+  ],
   "defaultLocale": "en",
-  "tagline": { "en": "Home, well kept.", "fr": "Un chez-soi, bien entretenu." },
+  "tagline": {
+    "en": "Home, well kept.",
+    "fr": "Un chez-soi, bien entretenu."
+  },
   "description": {
     "en": "Studio to three-bedroom rental suites in Millbrook Commons, Toronto, from $2,050 a month. Rooftop terrace, fitness studio, co-working and pet spa, 4 minutes from Millbrook Station.",
     "fr": "Appartements locatifs du studio au trois chambres à Millbrook Commons, Toronto, à partir de 2 050 $ par mois. Terrasse sur le toit, gym, cotravail et spa pour animaux, à 4 minutes de la station Millbrook."
   },
-  "status": { "en": "Now leasing", "fr": "Location en cours" },
+  "status": {
+    "en": "Now leasing",
+    "fr": "Location en cours"
+  },
   "address": {
     "street": "120 Aster Lane",
     "city": "Toronto",
@@ -23,23 +32,77 @@
   "phoneHref": "+14165550142",
   "email": "leasing@maisonaster.example",
   "hours": [
-    { "days": ["Mo", "Tu", "We", "Th", "Fr"], "label": { "en": "Mon–Fri", "fr": "Lun–ven" }, "opens": "10:00", "closes": "19:00" },
-    { "days": ["Sa", "Su"], "label": { "en": "Sat–Sun", "fr": "Sam–dim" }, "opens": "11:00", "closes": "17:00" }
+    {
+      "days": [
+        "Mo",
+        "Tu",
+        "We",
+        "Th",
+        "Fr"
+      ],
+      "label": {
+        "en": "Mon–Fri",
+        "fr": "Lun–ven"
+      },
+      "opens": "10:00",
+      "closes": "19:00"
+    },
+    {
+      "days": [
+        "Sa",
+        "Su"
+      ],
+      "label": {
+        "en": "Sat–Sun",
+        "fr": "Sam–dim"
+      },
+      "opens": "11:00",
+      "closes": "17:00"
+    }
   ],
   "promo": {
     "enabled": true,
-    "text": { "en": "Up to 2 months free", "fr": "Jusqu’à 2 mois gratuits" },
-    "detail": { "en": "on select suites. Limited time.", "fr": "sur certains appartements. Durée limitée." }
+    "text": {
+      "en": "Enjoy up to two months free rent and one-year free Wi-Fi on select suites.",
+      "fr": "Profitez de jusqu’à deux mois de loyer gratuit et d’un an de Wi-Fi gratuit sur certains appartements."
+    },
+    "terms": {
+      "en": "*Terms and conditions apply.",
+      "fr": "*Certaines conditions s’appliquent."
+    }
   },
   "tourUrl": "https://example.com/book-a-tour",
   "residentPortalUrl": "https://example.com/resident-login",
   "social": [
-    { "label": "Instagram", "url": "https://instagram.com/" },
-    { "label": "Facebook", "url": "https://facebook.com/" }
+    {
+      "label": "Instagram",
+      "url": "https://instagram.com/"
+    },
+    {
+      "label": "Facebook",
+      "url": "https://facebook.com/"
+    }
   ],
-  "landlord": { "name": "Aster Living Group", "url": "https://example.com" },
-  "stats": { "suites": 312, "storeys": 24, "floorplans": 10, "walkScore": 94, "transitScore": 91, "minutesToSubway": 4, "minutesToDowntown": 15, "priceFrom": 2050 },
+  "landlord": {
+    "name": "Aster Living Group",
+    "url": "https://example.com"
+  },
+  "stats": {
+    "suites": 312,
+    "storeys": 24,
+    "floorplans": 10,
+    "walkScore": 94,
+    "transitScore": 91,
+    "minutesToSubway": 4,
+    "minutesToDowntown": 15,
+    "priceFrom": 2050
+  },
   "petsAllowed": true,
-  "analytics": { "gtmId": "" },
-  "forms": { "provider": "netlify", "name": "tour-request" }
+  "analytics": {
+    "gtmId": ""
+  },
+  "forms": {
+    "provider": "netlify",
+    "name": "tour-request"
+  }
 }

@@ -51,12 +51,14 @@ const full = (src: string) => `https://images.unsplash.com/photo-${src.replace('
 </dialog>
 
 <script>
+  import { animateFilter } from '../../lib/filterAnimate';
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-cat]');
-  const items = document.querySelectorAll<HTMLElement>('[data-masonry] > li');
+  const items = [...document.querySelectorAll<HTMLElement>('[data-masonry] > li')];
   buttons.forEach((b) => b.addEventListener('click', () => {
+    if (b.getAttribute('aria-pressed') === 'true') return;
     const c = b.dataset.cat!;
     buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-    items.forEach((li) => (li.hidden = c !== 'all' && li.dataset.cat !== c));
+    animateFilter(items, (li) => c === 'all' || li.dataset.cat === c);
   }));
   const dlg = document.querySelector<HTMLDialogElement>('[data-lightbox]')!;
   const img = dlg.querySelector<HTMLImageElement>('[data-lightbox-img]')!;

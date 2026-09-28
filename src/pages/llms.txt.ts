@@ -20,7 +20,7 @@ export const GET: APIRoute = async ({ site: url }) => {
 - Leasing office: ${site.phone} · ${site.email} · ${site.hours.map((h) => `${h.label.en} ${h.opens}–${h.closes}`).join(', ')}
 - Building: ${site.stats.storeys} storeys, ${site.stats.suites} rental suites, pets allowed (up to 2)
 - Rents from: $${site.stats.priceFrom.toLocaleString('en-CA')} CAD/month
-- Current offer: ${site.promo.enabled ? `${site.promo.text.en} ${site.promo.detail.en}` : 'none'}
+- Current offer: ${site.promo.enabled ? `${site.promo.text.en} ${site.promo.terms.en}` : 'none'}
 
 ## Floorplans
 ${suites.map((s) => `- ${s.data.name}: ${s.data.beds === 0 ? 'Studio' : `${s.data.beds} bed`}, ${s.data.baths} bath, ${s.data.sqft} sq ft, from $${s.data.priceFrom.toLocaleString('en-CA')}/month, ${s.data.availability === 'now' ? 'available now' : s.data.availability === 'waitlist' ? 'waitlist' : `available ${s.data.availability}`}`).join('\n')}

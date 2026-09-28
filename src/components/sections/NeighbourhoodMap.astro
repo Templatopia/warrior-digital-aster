@@ -1,0 +1,217 @@
+---
+/**
+ * Neighbourhood places list beside a map. Hovering (or tapping) a place highlights its pin, and vice versa.
+ * - With PUBLIC_GOOGLE_MAPS_API_KEY set (Netlify → Environment variables), a styled Google Map loads when the
+ *   section scrolls near the viewport. Optional PUBLIC_GOOGLE_MAPS_MAP_ID uses a cloud-styled map instead.
+ * - Without a key (or if Google fails to load), an illustrated map with the same pins is shown, so the page
+ *   never breaks. Place coordinates live in src/content/data/places.json.
+ */
+import { getCollection } from 'astro:content';
+import site from '../../config/site.json';
+import Icon from '../ui/Icon.astro';
+import { t } from '../../lib/i18n';
+import { byOrder } from '../../lib/content';
+import type { Locale, UiKey } from '../../i18n/ui';
+interface Props { locale: Locale; url: string; label: string; listLabel: string; note?: string; }
+const { locale, url, label, listLabel, note } = Astro.props;
+const places = (await getCollection('places')).sort(byOrder);
+const key = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY ?? '';
+const mapId = import.meta.env.PUBLIC_GOOGLE_MAPS_MAP_ID ?? '';
+const home = { lat: site.address.lat, lng: site.address.lng };
+
+// Illustrated fallback: project coordinates into the frame (with some padding)
+const lats = [home.lat, ...places.map((p) => p.data.lat)];
+const lngs = [home.lng, ...places.map((p) => p.data.lng)];
+const [minLat, maxLat, minLng, maxLng] = [Math.min(...lats), Math.max(...lats), Math.min(...lngs), Math.max(...lngs)];
+const PAD = 12;
+const pos = (lat: number, lng: number) => ({
+  x: PAD + ((lng - minLng) / (maxLng - minLng || 1)) * (100 - PAD * 2),
+  y: PAD + ((maxLat - lat) / (maxLat - minLat || 1)) * (100 - PAD * 2),
+});
+const mins = (n: number) => `${n} min`;
+---
+<section class="container-site pb-24 md:pb-32" data-nmap data-key={key} data-map-id={mapId} data-lat={home.lat} data-lng={home.lng} data-lang={locale}>
+  <div class="mb-8 flex items-end justify-between gap-4">
+    <h2 class="text-paren text-ink-soft">{listLabel}</h2>
+    {note && <p class="text-sm text-ink-soft">{note}</p>}
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,440px)_1fr] lg:gap-12">
+    <!-- Map (sticky, so it stays in view while you move down the list) -->
+    <div class="sticky top-16 z-10 -mx-4 bg-page md:top-24 md:mx-0 lg:order-2 lg:top-28 lg:self-start">
+      <div class="relative h-[42vh] min-h-[260px] overflow-hidden bg-muted lg:h-[min(640px,calc(100vh-10rem))]" data-map-frame>
+        <div class="absolute inset-0 transition-opacity duration-500" data-map-fallback aria-hidden="true">
+          <svg class="absolute inset-0 h-full w-full" viewBox="0 0 1280 640" preserveAspectRatio="none">
+            <path d="M0 180 L1280 140 M0 420 L1280 460 M260 0 L220 640 M620 0 L660 640 M980 0 L1010 640 M0 300 C300 280 500 340 700 310 S1100 250 1280 290" stroke="#fff" stroke-width="10" fill="none" />
+            <path d="M0 560 C200 520 380 600 560 560 S900 500 1280 540" stroke="#fff" stroke-width="4" fill="none" />
+            <path d="M40 600 C160 470 300 520 420 600 L420 640 L40 640 Z" fill="var(--ma-secondary)" fill-opacity=".45" />
+            <path d="M1060 40 h180 v160 h-180 Z" fill="var(--ma-secondary)" fill-opacity=".4" />
+          </svg>
+          {(() => { const h = pos(home.lat, home.lng); return (
+            <span class="nmap-pin nmap-pin--home" style={`left:${h.x}%;top:${h.y}%`}><span class="nmap-pin__dot"></span><span class="nmap-pin__label">{site.name}</span></span>
+          ); })()}
+          {places.map((p) => { const q = pos(p.data.lat, p.data.lng); return (
+            <span class:list={['nmap-pin', q.x > 55 && 'nmap-pin--flip']} data-pin={p.id} style={`left:${q.x}%;top:${q.y}%`}><span class="nmap-pin__dot"></span><span class="nmap-pin__label">{p.data.name} · {mins(p.data.walkMinutes)}</span></span>
+          ); })}
+        </div>
+        <div class="absolute inset-0 opacity-0 transition-opacity duration-500" data-map-canvas></div>
+      </div>
+      <a href={url} target="_blank" rel="noopener" class="link-line mt-3 mb-2 ml-4 inline-flex items-center gap-2 text-sm font-medium md:ml-0">{label} <Icon name="external" size={14} /></a>
+    </div>
+
+    <!-- Places list -->
+    <ul class="border-t border-line lg:order-1">
+      {places.map((p) => (
+        <li class="border-b border-line">
+          <button type="button" class="nmap-row grid w-full grid-cols-[1fr_auto] items-center gap-x-6 gap-y-1 py-5 text-left md:py-6" data-place={p.id} data-name={p.data.name} data-lat={p.data.lat} data-lng={p.data.lng} data-mins={mins(p.data.walkMinutes)}>
+            <span class="text-label-ext col-span-2 text-ink-soft">{t(locale, `place.category.${p.data.category}` as UiKey)}</span>
+            <span class="nmap-row__name text-2xl md:text-[1.75rem]">{p.data.name}</span>
+            <span class="text-2xl text-accent tabular-nums md:text-[1.75rem]">{mins(p.data.walkMinutes)}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style is:global>
+  .nmap-row { cursor: pointer; transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease; }
+  .nmap-row__name { background: linear-gradient(currentColor, currentColor) no-repeat 100% 100% / 0% 1px; transition: background-size 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+  .nmap-row.is-active { padding-left: 0.75rem; }
+  .nmap-row.is-active .nmap-row__name { background-position: 0% 100%; background-size: 100% 1px; }
+  .nmap-row:focus-visible { outline: 2px solid var(--ma-ink); outline-offset: 2px; }
+
+  .nmap-pin { position: absolute; display: flex; align-items: center; gap: 0.5rem; transform: translate(-6px, -50%); z-index: 1; pointer-events: auto; cursor: pointer; }
+  .nmap-pin__dot { width: 12px; height: 12px; flex: none; border-radius: 999px; background: var(--ma-accent); box-shadow: 0 0 0 3px var(--ma-surface), 0 1px 4px rgb(0 0 0 / 0.25); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+  .nmap-pin__label { white-space: nowrap; border-radius: 999px; background: var(--ma-surface); color: var(--ma-ink); padding: 0.35rem 0.75rem; font-size: 0.8125rem; font-weight: 500; box-shadow: 0 2px 10px rgb(0 0 0 / 0.12); opacity: 0; transform: translateX(-6px); transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; }
+  /* Pins on the right half show their label on the left so it never runs off the map */
+  .nmap-pin--flip { flex-direction: row-reverse; transform: translate(calc(-100% + 6px), -50%); }
+  .nmap-pin--flip .nmap-pin__label { transform: translateX(6px); }
+  .nmap-pin.is-active { z-index: 5; }
+  .nmap-pin.is-active .nmap-pin__dot { transform: scale(1.6); }
+  .nmap-pin.is-active .nmap-pin__label { opacity: 1; transform: none; }
+  .nmap-pin--home { z-index: 4; cursor: default; }
+  .nmap-pin--home .nmap-pin__dot { width: 16px; height: 16px; background: var(--ma-ink); }
+  .nmap-pin--home .nmap-pin__label { opacity: 1; transform: none; background: var(--ma-ink); color: var(--ma-page); font-weight: 600; }
+  .nmap-dimmed .nmap-pin:not(.is-active):not(.nmap-pin--home) { opacity: 0.55; }
+  .nmap-pin { transition: opacity 0.3s ease; }
+  @media (prefers-reduced-motion: reduce) { .nmap-row, .nmap-pin__dot, .nmap-pin__label { transition: none; } }
+</style>
+
+<script>
+  declare const google: any;
+  const root = document.querySelector<HTMLElement>('[data-nmap]');
+  if (root) {
+    const rows = [...root.querySelectorAll<HTMLButtonElement>('[data-place]')];
+    const frame = root.querySelector<HTMLElement>('[data-map-frame]')!;
+    const fallback = root.querySelector<HTMLElement>('[data-map-fallback]')!;
+    const canvas = root.querySelector<HTMLElement>('[data-map-canvas]')!;
+    let pins: Map<string, HTMLElement> = new Map(
+      [...fallback.querySelectorAll<HTMLElement>('[data-pin]')].map((el) => [el.dataset.pin!, el]),
+    );
+    let gmap: any = null;
+    let active: string | null = null;
+    let locked: string | null = null; // tapped / clicked selection (touch-friendly)
+
+    const setActive = (id: string | null) => {
+      active = id;
+      rows.forEach((r) => r.classList.toggle('is-active', r.dataset.place === id));
+      pins.forEach((el, pid) => el.classList.toggle('is-active', pid === id));
+      frame.classList.toggle('nmap-dimmed', !!id);
+    };
+    const panTo = (id: string) => {
+      const r = rows.find((x) => x.dataset.place === id);
+      if (gmap && r) gmap.panTo({ lat: Number(r.dataset.lat), lng: Number(r.dataset.lng) });
+    };
+
+    rows.forEach((r) => {
+      const id = r.dataset.place!;
+      r.addEventListener('mouseenter', () => setActive(id));
+      r.addEventListener('mouseleave', () => setActive(locked));
+      r.addEventListener('focus', () => setActive(id));
+      r.addEventListener('blur', () => setActive(locked));
+      r.addEventListener('click', () => { locked = locked === id ? null : id; setActive(locked ?? id); if (locked) panTo(id); });
+    });
+    const wirePin = (el: HTMLElement, id: string) => {
+      el.addEventListener('mouseenter', () => setActive(id));
+      el.addEventListener('mouseleave', () => setActive(locked));
+      el.addEventListener('click', () => { locked = id; setActive(id); });
+    };
+    pins.forEach((el, id) => wirePin(el, id));
+
+    // ---------- Google Maps (only when an API key is configured) ----------
+    const key = root.dataset.key;
+    if (key) {
+      const css = (v: string, fb: string) => getComputedStyle(document.documentElement).getPropertyValue(v).trim() || fb;
+      const styles = [
+        { elementType: 'geometry', stylers: [{ color: css('--ma-muted', '#eae3d7') }] },
+        { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+        { elementType: 'labels.text.fill', stylers: [{ color: css('--ma-ink-soft', '#5e5a53') }] },
+        { elementType: 'labels.text.stroke', stylers: [{ color: css('--ma-page', '#f5f1ea') }] },
+        { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+        { featureType: 'poi.park', elementType: 'geometry', stylers: [{ visibility: 'on' }, { color: '#d3dbcd' }] },
+        { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
+        { featureType: 'road', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+        { featureType: 'transit.line', elementType: 'geometry', stylers: [{ color: css('--ma-line-strong', '#bdb5a6') }] },
+        { featureType: 'transit.station', stylers: [{ visibility: 'simplified' }] },
+        { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#cbd6d9' }] },
+      ];
+
+      const init = async () => {
+        const { Map: GMap, OverlayView } = await google.maps.importLibrary('maps');
+        const { LatLngBounds } = await google.maps.importLibrary('core');
+        const home = { lat: Number(root.dataset.lat), lng: Number(root.dataset.lng) };
+        gmap = new GMap(canvas, {
+          center: home, zoom: 16, disableDefaultUI: true, zoomControl: true, clickableIcons: false,
+          gestureHandling: 'cooperative', ...(root.dataset.mapId ? { mapId: root.dataset.mapId } : { styles }),
+        });
+
+        // HTML pins as overlays, so they look and behave exactly like the illustrated fallback
+        class Pin extends OverlayView {
+          el: HTMLElement; pos: any;
+          constructor(el: HTMLElement, pos: any) { super(); this.el = el; this.pos = pos; }
+          onAdd() { this.getPanes().overlayMouseTarget.appendChild(this.el); }
+          draw() {
+            const proj = this.getProjection(), p = proj.fromLatLngToDivPixel(this.pos), c = proj.fromLatLngToContainerPixel(this.pos);
+            if (!p) return;
+            this.el.style.left = `${p.x}px`; this.el.style.top = `${p.y}px`;
+            if (!this.el.classList.contains('nmap-pin--home') && c) this.el.classList.toggle('nmap-pin--flip', c.x > canvas.clientWidth * 0.55);
+          }
+          onRemove() { this.el.remove(); }
+        }
+        const bounds = new LatLngBounds(); bounds.extend(home);
+        const homeEl = fallback.querySelector<HTMLElement>('.nmap-pin--home')!.cloneNode(true) as HTMLElement;
+        new Pin(homeEl, home).setMap(gmap);
+        const newPins = new Map<string, HTMLElement>();
+        rows.forEach((r) => {
+          const id = r.dataset.place!, pos = { lat: Number(r.dataset.lat), lng: Number(r.dataset.lng) };
+          const el = pins.get(id)!.cloneNode(true) as HTMLElement;
+          el.style.left = el.style.top = '0';
+          wirePin(el, id);
+          new Pin(el, pos).setMap(gmap);
+          newPins.set(id, el);
+          bounds.extend(pos);
+        });
+        pins = newPins;
+        gmap.fitBounds(bounds, 56);
+        google.maps.event.addListenerOnce(gmap, 'tilesloaded', () => { canvas.style.opacity = '1'; fallback.style.opacity = '0'; fallback.style.visibility = 'hidden'; setActive(active); });
+      };
+
+      // Invalid / restricted key: Google calls this; go back to the illustrated map
+      (window as any).gm_authFailure = () => { canvas.style.opacity = '0'; fallback.style.opacity = '1'; fallback.style.visibility = ''; };
+
+      const load = () => {
+        (window as any).__nmapInit = () => init().catch(() => {});
+        const s = document.createElement('script');
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&v=weekly&loading=async&callback=__nmapInit&language=${root.dataset.lang}&region=CA`;
+        s.async = true;
+        document.head.appendChild(s);
+      };
+      // Load only when the map is about to scroll into view (keeps the page fast)
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); load(); } }, { rootMargin: '400px 0px' });
+        io.observe(frame);
+      } else load();
+    }
+  }
+</script>

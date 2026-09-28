@@ -35,6 +35,8 @@ const places = defineCollection({
     category: z.enum(['coffee', 'groceries', 'transit', 'dining', 'parks', 'schools', 'fitness', 'culture']),
     name: z.string(),
     walkMinutes: z.number().int().positive(),
+    lat: z.number().min(-90).max(90),
+    lng: z.number().min(-180).max(180),
   }),
 });
 

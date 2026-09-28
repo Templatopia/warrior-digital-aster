@@ -14,13 +14,54 @@ const faqs = (await getCollection('faqs', (f) => f.data.pages.includes(page))).s
   </div>
   <div class="border-t border-line">
     {faqs.map((f, i) => (
-      <details class="group border-b border-line" open={i === 0}>
+      <details class="group border-b border-line" open={i === 0} data-faq>
         <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-6 font-serif text-xl md:text-2xl [&::-webkit-details-marker]:hidden">
           {l(f.data.question, locale)}
-          <span class="relative size-4 shrink-0" aria-hidden="true"><span class="absolute top-1/2 left-0 h-px w-4 bg-current"></span><span class="absolute top-0 left-1/2 h-4 w-px bg-current transition-transform group-open:scale-y-0"></span></span>
+          <span class="relative size-4 shrink-0" aria-hidden="true"><span class="absolute top-1/2 left-0 h-px w-4 bg-current"></span><span class="faq-plus absolute top-0 left-1/2 h-4 w-px bg-current"></span></span>
         </summary>
-        <p class="max-w-2xl pb-6 text-ink-soft">{l(f.data.answer, locale)}</p>
+        <div class="overflow-hidden" data-faq-body><p class="max-w-2xl pb-6 text-ink-soft" data-faq-inner>{l(f.data.answer, locale)}</p></div>
       </details>
     ))}
   </div>
 </section>
+
+<script>
+  // Smooth open/close for the FAQ <details>. Without JS (or with reduced motion) they open and close instantly as normal.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
+  document.querySelectorAll<HTMLDetailsElement>('[data-faq]').forEach((d) => {
+    const summary = d.querySelector('summary')!;
+    const body = d.querySelector<HTMLElement>('[data-faq-body]')!;
+    const inner = d.querySelector<HTMLElement>('[data-faq-inner]')!;
+    let anim: Animation | null = null;
+    let fade: Animation | null = null;
+    summary.addEventListener('click', (e) => {
+      if (reduce.matches || typeof body.animate !== 'function') return;
+      e.preventDefault();
+      const midway = d.classList.contains('is-closing') || (anim !== null);
+      const from = d.open ? body.getBoundingClientRect().height : 0; // current height, even mid-animation
+      anim?.cancel();
+      anim = null;
+      fade?.cancel();
+      const closing = d.open && !d.classList.contains('is-closing');
+      if (closing) {
+        d.classList.add('is-closing');
+        fade = inner.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-6px)' }], { duration: 250, easing: 'ease-in', fill: 'forwards' });
+        anim = body.animate([{ height: `${from}px` }, { height: '0px' }], { duration: 450, easing: EASE });
+        anim.onfinish = () => { d.open = false; d.classList.remove('is-closing'); anim = null; fade?.cancel(); };
+      } else {
+        d.classList.remove('is-closing');
+        d.open = true;
+        const to = body.scrollHeight;
+        anim = body.animate([{ height: `${midway ? from : 0}px` }, { height: `${to}px` }], { duration: 600, easing: EASE });
+        fade = inner.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 600, delay: 80, easing: EASE, fill: 'backwards' });
+        anim.onfinish = () => { anim = null; };
+      }
+    });
+  });
+</script>
+
+<style>
+  .faq-plus { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+  details[open]:not(.is-closing) .faq-plus { transform: rotate(90deg) scaleY(0); }
+</style>

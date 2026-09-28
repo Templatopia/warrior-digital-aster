@@ -1,5 +1,6 @@
 ---
 import Photo from '../ui/Photo.astro';
+import Icon from '../ui/Icon.astro';
 import { t, pagePath, type PageKey } from '../../lib/i18n';
 import type { Locale } from '../../i18n/ui';
 import type { PhotoKey } from '../../data/photos';
@@ -10,7 +11,20 @@ const title = t(locale, `nav.${page}`);
 <a href={pagePath(locale, page)} data-next-page data-vt-label={title} data-astro-prefetch="viewport" class="group relative isolate flex h-[440px] flex-col items-center justify-center gap-4 overflow-hidden text-center text-cream md:h-[640px]">
   <Photo photo={photo} locale={locale} class="absolute inset-0 -z-20 h-full w-full transition-transform duration-[1.4s] ease-out group-hover:scale-105" alt="" />
   <span class="absolute inset-0 -z-10 bg-[rgb(20_20_18/0.45)]" aria-hidden="true"></span>
-  <span class="text-paren rounded-full border border-cream px-3.5 py-1">{t(locale, 'next.label')}</span>
+  <span class="text-paren inline-flex items-center rounded-full border border-cream px-3.5 py-1">
+    {t(locale, 'next.label')}
+    <span class="next-arrow inline-flex overflow-hidden" aria-hidden="true"><Icon name="arrow-right" size={14} /></span>
+  </span>
   <span class="text-title px-4 [overflow-wrap:anywhere]">{title}</span>
   <span class="text-body-l px-4">{subtitle}</span>
 </a>
+
+<style>
+  /* Arrow slides out to the right of "Next" on hover/focus; always shown on touch screens (no hover there). */
+  .next-arrow {
+    max-width: 0; margin-left: 0; opacity: 0; transform: translateX(-6px);
+    transition: max-width 0.45s cubic-bezier(0.16, 1, 0.3, 1), margin-left 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  a:hover .next-arrow, a:focus-visible .next-arrow { max-width: 14px; margin-left: 0.5rem; opacity: 1; transform: none; }
+  @media (hover: none) { .next-arrow { max-width: 14px; margin-left: 0.5rem; opacity: 1; transform: none; } }
+</style>

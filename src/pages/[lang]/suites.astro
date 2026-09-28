@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import HeroPage from '../../components/sections/HeroPage.astro';
 import SectionHead from '../../components/sections/SectionHead.astro';
 import FloorplanGrid from '../../components/sections/FloorplanGrid.astro';
-import Features from '../../components/sections/Features.astro';
+import SuiteFeatures from '../../components/sections/SuiteFeatures.astro';
 import GallerySlider from '../../components/sections/GallerySlider.astro';
 import FaqList from '../../components/sections/FaqList.astro';
 import CtaStatement from '../../components/sections/CtaStatement.astro';
@@ -27,7 +27,7 @@ const faqs = (await getCollection('faqs', (f) => f.data.pages.includes('suites')
     <SectionHead label={p.floorplans.label} heading={p.floorplans.heading} summary={p.summary} />
     <div class="mt-14"><FloorplanGrid locale={locale} note={p.floorplans.note} /></div>
   </section>
-  <Features locale={locale} items={p.features.items} muted />
+  {p.suiteFeatures?.items?.length > 0 && <SuiteFeatures locale={locale} {...p.suiteFeatures} />}
   <GallerySlider locale={locale} {...p.slider} />
   <FaqList locale={locale} page="suites" label={p.faq.label} heading={p.faq.heading} />
   <CtaStatement locale={locale} heading={p.cta.heading} />

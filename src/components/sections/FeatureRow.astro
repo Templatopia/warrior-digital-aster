@@ -1,22 +1,31 @@
 ---
 import Photo from '../ui/Photo.astro';
 import Button from '../ui/Button.astro';
-import { pagePath, type PageKey } from '../../lib/i18n';
+import { t, pagePath, type PageKey } from '../../lib/i18n';
 import type { Locale } from '../../i18n/ui';
 import type { PhotoKey } from '../../data/photos';
 interface Props { locale: Locale; number: string; heading: string; body: string; photo: PhotoKey; link?: { label: string; page?: PageKey; url?: string }; side?: 'left' | 'right'; }
 const { locale, number, heading, body, photo, link, side = 'left' } = Astro.props;
 const href = link ? (link.url ?? pagePath(locale, link.page!)) : undefined;
+// The image links to the same page as the text link (hidden from screen readers/keyboard to avoid a duplicate link).
+const vtLabel = link?.page ? t(locale, `nav.${link.page}`) : undefined; // page name shown on the transition curtain
+const ext = link?.url ? { target: '_blank', rel: 'noopener' } : {};
 ---
 <article class:list={['grid items-end gap-8 md:grid-cols-2 md:gap-20', side === 'right' && 'md:[&>figure]:order-2 md:items-start']} data-reveal>
-  <figure class="aspect-[5/6] overflow-hidden md:max-w-[600px]">
-    <Photo photo={photo} locale={locale} sizes="(min-width: 768px) 45vw, 100vw" class="h-full w-full transition-transform duration-[1.2s] ease-out hover:scale-[1.03]" />
+  <figure class="group aspect-[5/6] overflow-hidden md:max-w-[600px]">
+    {href ? (
+      <a href={href} data-vt-label={vtLabel} tabindex="-1" aria-hidden="true" class="block h-full w-full" {...ext}>
+        <Photo photo={photo} locale={locale} sizes="(min-width: 768px) 45vw, 100vw" class="h-full w-full transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]" />
+      </a>
+    ) : (
+      <Photo photo={photo} locale={locale} sizes="(min-width: 768px) 45vw, 100vw" class="h-full w-full transition-transform duration-[1.2s] ease-out group-hover:scale-[1.03]" />
+    )}
   </figure>
   <div class:list={['max-w-[480px] space-y-6 md:py-16', side === 'left' ? 'md:justify-self-end' : '']}>
     <p class="text-label-ext text-accent">{number}</p>
     <span class="block h-px w-12 bg-ink" aria-hidden="true"></span>
     <h3 class="text-feature">{heading}</h3>
     <p class="text-body-l text-ink-soft">{body}</p>
-    {link && <Button href={href} variant="ghost" external={!!link.url}>{link.label}</Button>}
+    {link && <Button href={href} variant="ghost" external={!!link.url} data-vt-label={vtLabel}>{link.label}</Button>}
   </div>
 </article>

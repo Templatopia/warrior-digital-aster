@@ -19,12 +19,12 @@
         "label": "Walk Score"
       },
       {
-        "value": "4′",
+        "value": "4 min",
         "label": "Jusqu’à la station Millbrook",
         "accent": true
       },
       {
-        "value": "15′",
+        "value": "15 min",
         "label": "Jusqu’au centre-ville en métro"
       }
     ]
@@ -37,27 +37,120 @@
     "label": "(Tout près)",
     "note": "Temps de marche depuis le hall"
   },
-  "features": {
-    "items": [
+  "guide": {
+    "label": "(Guide du quartier)",
+    "slides": [
       {
-        "number": "01",
-        "heading": "Le café, au rez-de-chaussée",
-        "body": "Little Aster Coffee ouvre à 7 h au niveau commercial de l’immeuble. Le marché Commons a lieu tous les samedis, à trois minutes.",
+        "tab": "Cafés",
         "photo": "cafe",
-        "link": {
-          "label": "Ouvrir la carte",
-          "url": "https://maps.google.com/?q=120+Aster+Lane+Toronto"
-        }
+        "heading": "Nos cafés préférés",
+        "subheading": "Quatre adresses pour un vrai bon café, toutes à moins de dix minutes à pied.",
+        "items": [
+          {
+            "name": "Little Aster Coffee",
+            "detail": "Cafés filtres d’origine unique, au rez-de-chaussée",
+            "time": "1 min"
+          },
+          {
+            "name": "Grindstone Roasters",
+            "detail": "Torréfacteur artisanal avec terrasse ensoleillée",
+            "time": "4 min"
+          },
+          {
+            "name": "Café Mireille",
+            "detail": "Viennoiseries françaises et cortados au lait d’avoine",
+            "time": "6 min"
+          },
+          {
+            "name": "Northbound Espresso",
+            "detail": "Ouvert dès 6 h pour les lève-tôt",
+            "time": "8 min"
+          }
+        ]
       },
       {
-        "number": "02",
-        "heading": "Le centre-ville en quinze minutes",
-        "body": "La station Millbrook est à quatre minutes à pied. Les parcs riverains, le quartier financier et l’aréna sont à quelques arrêts.",
+        "tab": "Restaurants",
+        "photo": "dining",
+        "heading": "Nos bonnes tables",
+        "subheading": "Des pâtes du mardi soir au menu dégustation des grandes occasions.",
+        "items": [
+          {
+            "name": "Osteria Verde",
+            "detail": "Pâtes fraîches et une longue carte de vins nature",
+            "time": "5 min"
+          },
+          {
+            "name": "Sumi Izakaya",
+            "detail": "Brochettes au charbon et petites assiettes tard le soir",
+            "time": "7 min"
+          },
+          {
+            "name": "The Larder",
+            "detail": "Cuisine canadienne de saison et un excellent brunch",
+            "time": "9 min"
+          },
+          {
+            "name": "Taqueria Cielo",
+            "detail": "Tacos al pastor, tortillas maison et mezcal",
+            "time": "10 min"
+          }
+        ]
+      },
+      {
+        "tab": "Sport",
+        "photo": "yoga",
+        "heading": "Studios de sport à proximité",
+        "subheading": "En plus de notre gym : escalade, Pilates Reformer, yoga chaud et club de course.",
+        "items": [
+          {
+            "name": "Commons Climbing Co.",
+            "detail": "Murs de bloc et soirées pour débutants",
+            "time": "8 min"
+          },
+          {
+            "name": "Reform Pilates Studio",
+            "detail": "Cours Reformer et au sol, sept jours sur sept",
+            "time": "5 min"
+          },
+          {
+            "name": "Heat Yoga Millbrook",
+            "detail": "Yoga chaud, flow et réparateur",
+            "time": "6 min"
+          },
+          {
+            "name": "Ravine Run Club",
+            "detail": "Courses de groupe gratuites les mardis et samedis",
+            "time": "Départ de notre hall"
+          }
+        ]
+      },
+      {
+        "tab": "Incontournables",
         "photo": "torontoSkyline",
-        "link": {
-          "label": "Réserver une visite",
-          "page": "contact"
-        }
+        "heading": "Lieux incontournables",
+        "subheading": "Ces lieux qui placent Maison Aster au cœur de tout.",
+        "items": [
+          {
+            "name": "Station Millbrook",
+            "detail": "Le centre-ville en 15 minutes de métro",
+            "time": "4 min"
+          },
+          {
+            "name": "Parc du ravin Millbrook",
+            "detail": "Sentiers, aire sans laisse et jeux d’eau",
+            "time": "6 min"
+          },
+          {
+            "name": "Commons Arena",
+            "detail": "Hockey, basketball et concerts",
+            "time": "12 min"
+          },
+          {
+            "name": "Quartier financier",
+            "detail": "Le cœur des affaires de la ville",
+            "time": "15 min en métro"
+          }
+        ]
       }
     ]
   },
