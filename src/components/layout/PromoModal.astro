@@ -1,0 +1,93 @@
+---
+/**
+ * Offer pop-up (text in site.json → promo; set "enabled": false to turn it off).
+ * Shown on the home page (EN + FR) every time it loads, the moment the visitor starts scrolling.
+ * Desktop: centred modal with a photo. Phones: a bottom sheet, so it never covers the whole screen.
+ */
+import site from '../../config/site.json';
+import Photo from '../ui/Photo.astro';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { t, l, pagePath } from '../../lib/i18n';
+import type { Locale } from '../../i18n/ui';
+import type { PhotoKey } from '../../data/photos';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const promo = site.promo as typeof site.promo & { photo?: PhotoKey };
+// Keep hyphenated words ("Wi-Fi", "one-year") from breaking across lines
+const parts = l(promo.text, locale).split(/(\S+-\S+)/);
+---
+{promo.enabled && (
+<dialog class="promo-modal m-0 mt-auto max-h-[85dvh] w-full max-w-none overflow-y-auto bg-page p-0 text-ink backdrop:bg-transparent md:m-auto md:w-[min(860px,calc(100vw-4rem))]" data-promo aria-labelledby="promo-title">
+  <div class="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+    {promo.photo && (
+      <div class="hidden md:block">
+        <Photo photo={promo.photo} locale={locale} sizes="430px" widths={[480, 860]} class="h-full w-full" alt="" />
+      </div>
+    )}
+    <div class="relative p-6 pt-14 outline-none md:p-12 md:pt-16" data-promo-body tabindex="-1" autofocus>
+      <button type="button" class="absolute top-3 right-3 grid size-11 place-items-center rounded-full bg-muted transition-colors hover:bg-line md:top-5 md:right-5" data-promo-close aria-label={t(locale, 'nav.close')}><Icon name="close" size={18} /></button>
+      <p class="text-paren text-accent">{t(locale, 'promo.label')}</p>
+      <h2 id="promo-title" class="mt-4 font-display text-[1.75rem] leading-[1.15] font-light tracking-[-0.01em] md:text-[2.25rem]">{parts.map((x, i) => (i % 2 ? <span class="whitespace-nowrap">{x}</span> : x))}</h2>
+      <p class="mt-4 text-sm text-ink-soft">{l(promo.terms, locale)}</p>
+      <div class="mt-8">
+        <Button href={pagePath(locale, 'contact')} class="max-sm:w-full">{t(locale, 'cta.bookTour')}</Button>
+      </div>
+    </div>
+  </div>
+</dialog>
+)}
+
+<style is:global>
+  .promo-modal::backdrop { background: rgb(20 20 18 / 0.6); }
+  .promo-modal[open]::backdrop { animation: promo-backdrop 0.4s ease-out; }
+  @keyframes promo-backdrop { from { opacity: 0; } }
+  html.promo-open { overflow: hidden; }
+</style>
+
+<script>
+  const dlg = document.querySelector<HTMLDialogElement>('[data-promo]');
+  if (dlg) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const anim = () => !reduce.matches && typeof dlg.animate === 'function';
+    const mobile = () => window.matchMedia('(max-width: 767px)').matches;
+
+    const open = () => {
+      // Wait if a page transition, another pop-up or the menu is showing
+      const root = document.documentElement;
+      if (root.classList.contains('vt-arrive') || root.classList.contains('vt-leaving') || document.querySelector('dialog[open]')) { setTimeout(open, 800); return; }
+      root.classList.add('promo-open');
+      dlg.showModal();
+      if (!anim()) return;
+      dlg.animate(mobile()
+        ? [{ transform: 'translateY(100%)' }, { transform: 'none' }]
+        : [{ opacity: 0, transform: 'translateY(24px) scale(0.98)' }, { opacity: 1, transform: 'none' }],
+        { duration: 600, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
+      dlg.querySelector('[data-promo-body]')?.animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 600, delay: 150, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'backwards' });
+    };
+    const close = () => {
+      if (!dlg.open) return;
+      const done = () => { dlg.close(); document.documentElement.classList.remove('promo-open'); dlg.getAnimations().forEach((a) => a.cancel()); };
+      if (!anim()) return done();
+      dlg.animate(mobile()
+        ? [{ transform: 'none' }, { transform: 'translateY(100%)' }]
+        : [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(16px) scale(0.98)' }],
+        { duration: 300, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'forwards' }).finished.then(done, done);
+    };
+
+    // Trigger: the moment the visitor starts scrolling down (well before they're past the hero)
+    const onScroll = () => {
+      if (window.scrollY < 10) return;
+      window.removeEventListener('scroll', onScroll);
+      setTimeout(open, 250);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    dlg.querySelectorAll('[data-promo-close]').forEach((b) => b.addEventListener('click', close));
+    dlg.addEventListener('cancel', (e) => { e.preventDefault(); close(); }); // Esc
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });  // backdrop
+    // Following the Book a Tour link: close straight away so the page transition can play
+    dlg.querySelector('a')?.addEventListener('click', () => { dlg.close(); document.documentElement.classList.remove('promo-open'); });
+    window.addEventListener('pageshow', (e) => { if (e.persisted && dlg.open) { dlg.close(); document.documentElement.classList.remove('promo-open'); } });
+  }
+</script>

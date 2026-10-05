@@ -18,7 +18,7 @@ const media = (cls: string) => cls.split(' ').filter((c) => !c.includes('col-spa
       <div class:list={['overflow-hidden', media(layout[i % layout.length])]}>
         <Photo photo={a.data.photo} locale={locale} sizes="(min-width: 768px) 60vw, 100vw" class="h-full w-full" />
       </div>
-      <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+      <div class="space-y-2">
         <h3 class:list={[i < 2 ? 'text-feature' : 'font-serif text-xl md:text-feature']}>{l(a.data.name, locale)}</h3>
         <p class="text-label-ext text-accent">{l(a.data.location, locale)}</p>
       </div>

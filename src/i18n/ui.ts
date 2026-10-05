@@ -2,7 +2,7 @@
 export const ui = {
   en: {
     'nav.suites': 'Suites', 'nav.amenities': 'Amenities', 'nav.neighbourhood': 'Neighbourhood', 'nav.lifestyle': 'Lifestyle', 'nav.gallery': 'Gallery', 'nav.contact': 'Contact', 'nav.home': 'Home',
-    'hero.offer': 'Current offer', 'nav.menu': 'Menu', 'nav.close': 'Close', 'nav.skip': 'Skip to content', 'nav.primary': 'Primary',
+    'hero.offer': 'Current offer', 'promo.label': '(Limited-time offer)', 'promo.dismiss': 'No thanks', 'nav.menu': 'Menu', 'nav.close': 'Close', 'nav.skip': 'Skip to content', 'nav.primary': 'Primary',
     'cta.bookTour': 'Book a Tour', 'cta.callUs': 'or call', 'cta.open7': 'open 7 days',
     'hero.scroll': '(Scroll)', 'next.label': 'Next',
     'suite.from': 'From', 'suite.perMonth': '/mo', 'suite.bath': 'Bath', 'suite.baths': 'Bath', 'suite.sqft': 'sq ft', 'suite.floorplan': 'Floorplan',
@@ -20,7 +20,7 @@ export const ui = {
   },
   fr: {
     'nav.suites': 'Appartements', 'nav.amenities': 'Commodités', 'nav.neighbourhood': 'Quartier', 'nav.lifestyle': 'Style de vie', 'nav.gallery': 'Galerie', 'nav.contact': 'Contact', 'nav.home': 'Accueil',
-    'hero.offer': 'Offre en cours', 'nav.menu': 'Menu', 'nav.close': 'Fermer', 'nav.skip': 'Aller au contenu', 'nav.primary': 'Principal',
+    'hero.offer': 'Offre en cours', 'promo.label': '(Offre à durée limitée)', 'promo.dismiss': 'Non merci', 'nav.menu': 'Menu', 'nav.close': 'Fermer', 'nav.skip': 'Aller au contenu', 'nav.primary': 'Principal',
     'cta.bookTour': 'Réserver une visite', 'cta.callUs': 'ou appelez le', 'cta.open7': 'ouvert 7 jours',
     'hero.scroll': '(Défiler)', 'next.label': 'Suivant',
     'suite.from': 'À partir de', 'suite.perMonth': '/mois', 'suite.bath': 'sdb', 'suite.baths': 'sdb', 'suite.sqft': 'pi²', 'suite.floorplan': 'Plan',

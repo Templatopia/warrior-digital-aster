@@ -132,9 +132,14 @@
 }
 
 /* Marquee (oversized wordmarks) */
+/* Big wordmarks: clip sideways only, so descenders (y, g, p) and accents are never cut off top or bottom */
+.wordmark-clip { overflow-x: clip; overflow-y: visible; }
+@supports not (overflow-x: clip) { .wordmark-clip { overflow: hidden; } }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .marquee-track { display: flex; width: max-content; animation: marquee var(--marquee-speed, 40s) linear infinite; }
 .marquee-track[data-reverse] { animation-direction: reverse; }
+/* Scroll-linked variant: no auto animation; JS moves it with the page scroll (starts part-way so both edges stay filled) */
+.marquee-track--scroll { animation: none; transform: translate3d(-25%, 0, 0); will-change: transform; }
 
 /* Reveal on scroll (progressive enhancement: only hidden once JS marks the page ready) */
 .js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 0.9s var(--ease-out-soft), transform 0.9s var(--ease-out-soft); }

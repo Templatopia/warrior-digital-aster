@@ -69,7 +69,8 @@
     "terms": {
       "en": "*Terms and conditions apply.",
       "fr": "*Certaines conditions s’appliquent."
-    }
+    },
+    "photo": "rooftop"
   },
   "tourUrl": "https://example.com/book-a-tour",
   "residentPortalUrl": "https://example.com/resident-login",

@@ -13,7 +13,7 @@ const p = Astro.props;
     <blockquote class="text-quote max-w-4xl">{p.quote}</blockquote>
     <figcaption class="text-paren text-ink-soft">{p.attribution}&nbsp;&nbsp;{p.attributionLabel}</figcaption>
   </figure>
-  <Marquee text={p.marquee} class="text-mega my-10 text-accent md:my-14" speed={55} reverse />
+  <Marquee text={p.marquee} class="text-mega my-10 text-accent md:my-14" reverse onScroll />
   <div class="container-site">
     <SectionHead label={p.label} heading={p.statement} summary={p.summary} />
   </div>

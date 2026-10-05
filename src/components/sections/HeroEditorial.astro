@@ -3,31 +3,22 @@ import site from '../../config/site.json';
 import Photo from '../ui/Photo.astro';
 import Button from '../ui/Button.astro';
 import Marquee from './Marquee.astro';
-import { t, l, pagePath } from '../../lib/i18n';
+import { t, pagePath } from '../../lib/i18n';
 import type { Locale } from '../../i18n/ui';
 import type { PhotoKey } from '../../data/photos';
 interface Props { locale: Locale; photo: PhotoKey; marquee: string; eyebrow: string; subline: string; }
 const { locale, photo, marquee, eyebrow, subline } = Astro.props;
-// Offer call-out text lives in site.json → promo (set "enabled": false to show just the Book a Tour button).
 ---
 <section class="relative isolate flex min-h-[640px] flex-col justify-end overflow-hidden bg-inverse text-cream h-svh max-h-[1000px]">
   <Photo photo={photo} locale={locale} eager class="absolute inset-0 -z-20 h-full w-full" />
-  <div class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(20_20_18/0.45)_0%,rgb(20_20_18/0.05)_30%,rgb(20_20_18/0.15)_65%,rgb(20_20_18/0.72)_100%)]"></div>
+  <div class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(20_20_18/0.55)_0%,rgb(20_20_18/0.38)_30%,rgb(20_20_18/0.38)_60%,rgb(20_20_18/0.78)_100%)]"></div>
   <h1 class="sr-only">{site.name}: {subline}</h1>
-  <Marquee text={marquee} class="text-mega absolute inset-x-0 top-[30%] md:top-[33%]" speed={50} />
+  <Marquee text={marquee} class="text-mega absolute inset-x-0 top-[30%] md:top-[33%]" still />
   <div class="container-site relative grid gap-6 pb-8 md:grid-cols-2 md:items-end md:pb-16 lg:grid-cols-3">
     <p class="text-paren hidden lg:block">{t(locale, 'hero.scroll')}</p>
     <p class="text-label-ext lg:text-center">{eyebrow}</p>
-    {site.promo.enabled ? (
-      <aside class="w-full space-y-4 bg-page p-5 text-ink md:max-w-[360px] md:justify-self-end md:p-6" aria-label={t(locale, 'hero.offer')}>
-        <p class="text-[0.9375rem] leading-snug font-medium">{l(site.promo.text, locale)}</p>
-        <p class="text-xs text-ink-soft">{l(site.promo.terms, locale)}</p>
-        <Button href={pagePath(locale, 'contact')} size="sm" class="w-full py-3">{t(locale, 'cta.bookTour')}</Button>
-      </aside>
-    ) : (
-      <div class="flex flex-wrap items-center gap-3 md:justify-end">
-        <Button href={pagePath(locale, 'contact')} size="sm" class="max-md:w-full max-md:py-3.5">{t(locale, 'cta.bookTour')}</Button>
-      </div>
-    )}
+    <div class="flex flex-wrap items-center gap-3 md:justify-end">
+      <Button href={pagePath(locale, 'contact')} size="sm" class="max-md:w-full max-md:py-3.5">{t(locale, 'cta.bookTour')}</Button>
+    </div>
   </div>
 </section>

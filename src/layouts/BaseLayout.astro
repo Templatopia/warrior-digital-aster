@@ -4,6 +4,7 @@ import site from '../config/site.json';
 import figtreeUrl from '@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2?url';
 import frauncesUrl from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
 import PageTransition from '../components/layout/PageTransition.astro';
+import PromoModal from '../components/layout/PromoModal.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import { locales, localeTag, switchLocalePath, t, pageOrder, pagePath } from '../lib/i18n';
@@ -92,6 +93,7 @@ const gtm = site.analytics.gtmId;
       <slot />
     </main>
     <Footer locale={locale} />
+    {pageKey === 'home' && <PromoModal locale={locale} />}
     <script>
       // Reveal-on-scroll for [data-reveal] elements
       const io = new IntersectionObserver((entries) => {

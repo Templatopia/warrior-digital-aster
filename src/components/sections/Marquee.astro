@@ -1,11 +1,63 @@
 ---
-/** Oversized wordmark that scrolls horizontally and bleeds off both edges. Decorative: hidden from assistive tech. */
-interface Props { text: string; class?: string; speed?: number; reverse?: boolean; }
-const { text, class: cls = '', speed = 45, reverse = false } = Astro.props;
+/**
+ * Oversized wordmark. Decorative: hidden from assistive tech (each page has a real heading).
+ * - Default: scrolls horizontally and bleeds off both edges.
+ * - `still`: one static, centred line at the same large size, shrunk only if needed to fit the screen width.
+ * - `onScroll`: doesn't move by itself; slides sideways as you scroll past it (`reverse` slides the other way).
+ */
+interface Props { text: string; class?: string; speed?: number; reverse?: boolean; still?: boolean; onScroll?: boolean; }
+const { text, class: cls = '', speed = 45, reverse = false, still = false, onScroll = false } = Astro.props;
 const items = Array.from({ length: 4 }, () => text);
 ---
-<div class:list={['overflow-hidden whitespace-nowrap select-none', cls]} aria-hidden="true">
-  <div class="marquee-track" data-reverse={reverse ? '' : undefined} style={`--marquee-speed:${speed}s`}>
-    {[...items, ...items].map((w) => <span class="pr-[0.3em]">{w}</span>)}
+{still ? (
+  <div class:list={['wordmark-clip px-4 text-center whitespace-nowrap select-none md:px-10', cls]} aria-hidden="true">
+    <span class="inline-block" data-fit-text>{text}</span>
   </div>
-</div>
+) : (
+  <div class:list={['wordmark-clip whitespace-nowrap select-none', cls]} aria-hidden="true">
+    <div class:list={['marquee-track', onScroll && 'marquee-track--scroll']} data-reverse={reverse ? '' : undefined} data-scroll-marquee={onScroll ? '' : undefined} style={`--marquee-speed:${speed}s`}>
+      {[...items, ...items].map((w) => <span class="pr-[0.3em]">{w}</span>)}
+    </div>
+  </div>
+)}
+
+<script>
+  // Static wordmarks: keep the full CSS size, but scale down so the whole word always fits on one line.
+  const fit = () => document.querySelectorAll<HTMLElement>('[data-fit-text]').forEach((el) => {
+    el.style.fontSize = '';
+    const box = el.parentElement!;
+    const cs = getComputedStyle(box);
+    const avail = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const w = el.scrollWidth;
+    if (w > avail && avail > 0) el.style.fontSize = `${(parseFloat(getComputedStyle(el).fontSize) * avail) / w}px`;
+  });
+  fit();
+  document.fonts?.ready.then(fit);
+  let t = 0;
+  window.addEventListener('resize', () => { clearTimeout(t); t = window.setTimeout(fit, 100); });
+
+  // Scroll-linked wordmarks: the line slides as its section passes through the viewport (transform only, one rAF per frame)
+  const tracks = [...document.querySelectorAll<HTMLElement>('[data-scroll-marquee]')];
+  if (tracks.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const visible = new Set<HTMLElement>();
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const vh = window.innerHeight;
+      visible.forEach((el) => {
+        const r = el.parentElement!.getBoundingClientRect();
+        const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height))); // 0 = entering at the bottom, 1 = leaving at the top
+        // Moves ~70% as far as the page scrolls, centred on a point a quarter of the way into the (very wide) track
+        const travel = (vh + r.height) * 0.7;
+        const base = -el.scrollWidth * 0.25;
+        const dir = el.hasAttribute('data-reverse') ? 1 : -1;
+        el.style.transform = `translate3d(${(base + dir * (p - 0.5) * travel).toFixed(1)}px, 0, 0)`;
+      });
+    };
+    const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    const io = new IntersectionObserver((es) => { es.forEach((e) => (e.isIntersecting ? visible.add(e.target as HTMLElement) : visible.delete(e.target as HTMLElement))); request(); });
+    tracks.forEach((el) => io.observe(el));
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', request);
+  }
+</script>
